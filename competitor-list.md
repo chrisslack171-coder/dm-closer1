@@ -19,13 +19,13 @@ the skill *needs* is the **URL** line — Notes are just for you.
 - **URL**: https://www.instagram.com/misscarolineflett/
 - **Notes**: IG-growth coach. Broad-appeal iPhone/IG "hack" reels with curiosity hooks for reach; niche offer lives entirely in the caption via comment-keyword → DM lead magnets (PROMPTS / APP / METHOD).
 
-### [Replace with a real account] (@handle)
-- **URL**: https://www.instagram.com/handle/
-- **Notes**: What they do well — hooks, format, niche angle.
+### Amy Porterfield (@amyporterfield)
+- **URL**: https://www.instagram.com/amyporterfield/
+- **Notes**: Launching digital courses. Top reels = personality/relationship (husband Hobie) + mindset, NOT tactics; tactical launch reels underperform. Comment-keyword funnels (POD65 / NEWSLETTER / TRAINING) to podcast/newsletter/training.
 
 ### [Replace with a real account] (@handle)
 - **URL**: https://www.instagram.com/handle/
-- **Notes**: ...
+- **Notes**: What they do well — hooks, format, niche angle.
 
 <!-- Add more below. Order = priority (top = researched first). -->
 

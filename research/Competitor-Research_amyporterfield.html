@@ -1,0 +1,142 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IG Competitor Research — amyporterfield</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔬</text></svg>">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0c0f;--surface:#15151b;--surface2:#1d1d25;--line:#2a2a34;
+  --text:#ededf2;--muted:#9a9aa9;--accent:#fa5a8e;--accent2:#feaa54;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);
+  font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;padding:0 0 80px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header{padding:56px 0 28px;border-bottom:1px solid var(--line);margin-bottom:36px}
+.kicker{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700}
+h1{font-size:40px;line-height:1.05;font-weight:800;letter-spacing:-.02em;margin:10px 0 18px}
+.stats{display:flex;flex-wrap:wrap;gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:999px;
+  padding:6px 14px;font-size:13px;color:var(--muted)}
+.stat b{color:var(--text);font-weight:700}
+.pattern{background:linear-gradient(135deg,rgba(250,90,142,.12),rgba(254,170,84,.08));
+  border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:14px;
+  padding:20px 22px;margin-bottom:40px}
+.pattern .lbl{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);font-weight:700;margin-bottom:8px}
+.pattern p{font-size:16px;color:#dcdce4}
+.card{display:grid;grid-template-columns:44px 340px 1fr;gap:24px;align-items:start;
+  background:var(--surface);border:1px solid var(--line);border-radius:18px;
+  padding:22px;margin-bottom:22px}
+.rank{position:sticky;top:18px}
+.badge{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;
+  background:var(--surface2);border:1px solid var(--line);font-weight:800;font-size:16px}
+.badge.gold{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a0b12;border:0}
+.media-col{width:340px}
+.gallery{position:relative;width:340px;aspect-ratio:4/5;background:var(--surface2);
+  border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.gallery.empty{display:grid;place-items:center;color:var(--muted);font-size:13px}
+.track{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;
+  scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+.track img{flex:0 0 100%;width:100%;height:100%;object-fit:contain;scroll-snap-align:center}
+.nav{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:34px;height:34px;
+  border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:20px;
+  cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(4px);opacity:0;transition:.15s}
+.gallery:hover .nav{opacity:1}
+.nav.prev{left:8px}.nav.next{right:8px}
+.counter{position:absolute;top:10px;right:10px;z-index:2;background:rgba(0,0,0,.6);
+  color:#fff;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;backdrop-filter:blur(4px)}
+.dots{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:2}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4)}
+.dot.active{background:#fff;width:18px;border-radius:3px}
+.ig-btn{display:block;text-align:center;margin-top:12px;padding:10px;border-radius:10px;
+  background:var(--surface2);border:1px solid var(--line);color:var(--text);
+  text-decoration:none;font-size:14px;font-weight:600;transition:.15s}
+.ig-btn:hover{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a0b12;border-color:transparent}
+.meta-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.handle{font-size:18px;font-weight:700}
+.tag{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  padding:4px 9px;border-radius:6px;background:var(--surface2);border:1px solid var(--line);color:var(--muted)}
+.tag-carousel{color:#7bb8ff;border-color:#27405e}
+.tag-reel,.tag-video{color:#ff9ec2;border-color:#5e2740}
+.tag-image{color:#9affc4;border-color:#27543c}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.pill{font-size:13px;color:var(--muted);background:var(--surface2);border:1px solid var(--line);
+  border-radius:999px;padding:4px 12px}
+.pill.likes{color:#ff8fb3}
+.pill.views{color:#8fb8ff}
+.pill.breakout{font-weight:700}
+.pill.breakout.hot{color:#ff6a4d;border-color:#5e2e27;background:rgba(255,90,60,.12)}
+.pill.breakout.warm{color:#feaa54;border-color:#5e4a27;background:rgba(254,170,84,.12)}
+.pill.breakout.cool{color:#9a9aa9}
+.lbl{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);font-weight:700;margin-bottom:6px}
+.hook{margin-bottom:16px}
+.hook p{font-size:20px;line-height:1.35;font-weight:700;letter-spacing:-.01em}
+.fmt{margin-bottom:16px}
+.fmt .chip{display:inline-block;font-size:14px;font-weight:700;color:var(--accent2);
+  background:rgba(254,170,84,.1);border:1px solid rgba(254,170,84,.32);
+  border-radius:8px;padding:5px 12px;text-transform:capitalize}
+.block{margin-bottom:16px}
+.block p{color:#d2d2dc}
+.transcript{margin-bottom:16px;background:var(--surface2);border:1px solid var(--line);
+  border-radius:10px;padding:0 14px}
+.transcript summary{display:flex;align-items:center;cursor:pointer;padding:11px 0;font-size:13px;
+  font-weight:600;color:var(--muted);list-style:none;letter-spacing:.04em;text-transform:uppercase}
+.transcript summary::-webkit-details-marker{display:none}
+.transcript summary:before{content:"▸";color:var(--accent);margin-right:9px}
+.transcript[open] summary:before{content:"▾"}
+.copy-btn{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--accent);background:var(--surface);border:1px solid var(--line);border-radius:7px;
+  padding:4px 11px;cursor:pointer;transition:.15s}
+.copy-btn:hover{background:var(--accent);color:#1a0b12;border-color:transparent}
+.copy-btn.copied{background:#2faa6a;color:#06210f;border-color:transparent}
+.transcript p{padding:0 0 14px;color:#c3c3cf;font-size:14.5px}
+.why{background:linear-gradient(135deg,rgba(250,90,142,.1),rgba(254,170,84,.06));
+  border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.why .lbl{color:var(--accent)}
+.why p{color:#e6e6ee}
+footer{text-align:center;color:var(--muted);font-size:13px;margin-top:48px}
+@media(max-width:760px){
+  .card{grid-template-columns:1fr;gap:16px}
+  .rank{position:static}.media-col,.gallery{width:100%}
+  h1{font-size:30px}
+}
+</style></head><body><div class="wrap">
+<header><div class="kicker">Instagram Competitor Research</div>
+<h1>What's working in the niche</h1><div class="stats"><span class="stat"><b>1</b> accounts</span><span class="stat"><b>3</b> posts</span><span class="stat">last 7 days</span><span class="stat">ranked by <b>likes</b></span><span class="stat">🔥 <b>breakout</b> = likes ÷ creator median</span><span class="stat">amyporterfield</span></div></header>
+<div class="pattern"><span class="lbl">Pattern</span><p>Amy Porterfield&#x27;s top reels this week have almost nothing to do with tactics — they&#x27;re personality, relationship (her husband Hobie), and mindset. Her single biggest reel (15.6x her median) is a podcast clip about her marriage, opened with a provocative question; meanwhile her tactical &#x27;comment TRAINING&#x27; launch reels languish at 20-50 likes. The reach engine is HER, not her frameworks. Like Caroline, every reel still routes through a comment-keyword funnel (POD65, NEWSLETTER, TRAINING) — but Amy funnels to a podcast / newsletter / free training, not a hard pitch. Takeaway for an established expert: personality + relationship + a sharp question hook drives the reach; the tactics convert later, inside the funnel.</p></div><article class="card"><div class="rank"><span class="badge gold">#1</span></div><div class="media-col"><div class="gallery empty"><span>media unavailable</span></div><a class="ig-btn" href="https://www.instagram.com/reel/DZ7UJ0WBYVy/" target="_blank" rel="noopener">▶ View on Instagram</a></div><div class="info"><div class="meta-row"><span class="handle">@amyporterfield</span><span class="tag tag-reel">Reel</span></div><div class="pills"><span class="pill likes">♥ 1,159</span><span class="pill views">▶ 59,084 views</span><span class="pill breakout hot" title="1,159 likes vs @amyporterfield&#x27;s 74 median this week">🔥 15.6× breakout</span><span class="pill comments">💬 162</span><span class="pill date">Jun 23, 2026</span></div><div class="hook"><span class="lbl">Hook · spoken (podcast clip)</span><p>How do you feel being married to a woman that makes all the money?</p></div><div class="fmt"><span class="lbl">Format</span><span class="chip">podcast clip / partner interview</span></div><div class="block"><span class="lbl">Breakdown</span><p>A podcast-trailer clip of Amy and her husband Hobie talking about their marriage and being a &#x27;team&#x27; — explicitly &#x27;no strategy today,&#x27; pure personality.</p></div><details class="transcript"><summary><span class="lbl-inline">Transcript</span><button class="copy-btn" type="button">Copy</button></summary><p>How do you feel being married to a woman that makes all the money? Because it is the truth. We really came to an understanding that we were a team. I think that&#x27;s what changed it for us. We&#x27;ve got really good established boundaries. You&#x27;re out there on the court, I get to cheer for it. To me, that&#x27;s exciting. I like that. I don&#x27;t ask you to spend money or anything like that for my business, but you&#x27;re very aware of what&#x27;s going on and we are a team. You just need me to walk with you on this.</p></details><div class="why"><span class="lbl">Why it worked</span><p>Her single most-engaged reel of the week (15.6x her median) has zero tactics — a provocative relationship question hook + a warm personality moment. People follow the person, not the framework. CTA funnels to the podcast (comment POD65).</p></div></div></article><article class="card"><div class="rank"><span class="badge">#2</span></div><div class="media-col"><div class="gallery empty"><span>media unavailable</span></div><a class="ig-btn" href="https://www.instagram.com/reel/DZ3eU0HvJ_S/" target="_blank" rel="noopener">▶ View on Instagram</a></div><div class="info"><div class="meta-row"><span class="handle">@amyporterfield</span><span class="tag tag-reel">Reel</span></div><div class="pills"><span class="pill likes">♥ 331</span><span class="pill views">▶ 15,955 views</span><span class="pill breakout hot" title="331 likes vs @amyporterfield&#x27;s 74 median this week">🔥 4.4× breakout</span><span class="pill comments">💬 34</span><span class="pill date">Jun 21, 2026</span></div><div class="hook"><span class="lbl">Hook · on-screen text + music (no narration)</span><p>Cheering for someone in your same industry won&#x27;t cost you a thing.</p></div><div class="fmt"><span class="lbl">Format</span><span class="chip">text-on-screen mindset quote (collab)</span></div><div class="block"><span class="lbl">Breakdown</span><p>A bite-size text-on-screen abundance-mindset quote reel (a collab post that appears on her grid).</p></div><details class="transcript"><summary><span class="lbl-inline">Transcript</span><button class="copy-btn" type="button">Copy</button></summary><p>(No spoken narration — a short text-on-screen reel set to music; surfaced via a collaboration with @stacytuschl. The message lives in the on-screen text + caption: the owners who really win aren&#x27;t guarding their lane, they&#x27;re running it; there&#x27;s enough room for everyone; someone else&#x27;s win doesn&#x27;t shrink yours; be the person who claps loudly.)</p></details><div class="why"><span class="lbl">Why it worked</span><p>A screenshot-worthy mindset statement — emotionally resonant and easy to share. Connection and belief, not a tactic; the collab also borrows the partner&#x27;s audience.</p></div></div></article><article class="card"><div class="rank"><span class="badge">#3</span></div><div class="media-col"><div class="gallery empty"><span>media unavailable</span></div><a class="ig-btn" href="https://www.instagram.com/reel/DZ8WZP6stY7/" target="_blank" rel="noopener">▶ View on Instagram</a></div><div class="info"><div class="meta-row"><span class="handle">@amyporterfield</span><span class="tag tag-reel">Reel</span></div><div class="pills"><span class="pill likes">♥ 248</span><span class="pill views">▶ 24,325 views</span><span class="pill breakout hot" title="248 likes vs @amyporterfield&#x27;s 74 median this week">🔥 3.3× breakout</span><span class="pill comments">💬 49</span><span class="pill date">Jun 23, 2026</span></div><div class="hook"><span class="lbl">Hook · on-screen text / caption (blooper, music)</span><p>I planned a clean little B-roll tutorial. Hobie had other plans.</p></div><div class="fmt"><span class="lbl">Format</span><span class="chip">blooper / behind-the-scenes</span></div><div class="block"><span class="lbl">Breakdown</span><p>A behind-the-scenes blooper of her husband derailing a planned tutorial, posted unedited.</p></div><details class="transcript"><summary><span class="lbl-inline">Transcript</span><button class="copy-btn" type="button">Copy</button></summary><p>(No spoken narration — music over a blooper clip of her husband hijacking a planned B-roll shoot. Caption: people don&#x27;t connect with perfect, they connect with real — the blooper, the moment you almost didn&#x27;t post; &#x27;letting people into your world is not a break from the work, it is the work.&#x27; CTA: comment NEWSLETTER.)</p></details><div class="why"><span class="lbl">Why it worked</span><p>Realness beat polish — the unscripted blooper outperformed her produced content that week. She names the mechanic herself: letting people into your world IS the work. CTA funnels to the newsletter.</p></div></div></article>
+<footer>Generated amyporterfield · ig-competitor-research · ranked by likes · view counts via tokscript</footer>
+</div><script>
+document.querySelectorAll('.gallery[data-n]').forEach(function(g){
+  var track=g.querySelector('.track'), counter=g.querySelector('.counter');
+  var dots=[].slice.call(g.querySelectorAll('.dot'));
+  var n=parseInt(g.getAttribute('data-n'),10);
+  function idx(){return Math.round(track.scrollLeft/track.clientWidth);}
+  function update(){var i=idx();if(counter)counter.textContent=(i+1)+' / '+n;
+    dots.forEach(function(d,j){d.classList.toggle('active',j===i);});}
+  track.addEventListener('scroll',function(){window.requestAnimationFrame(update);});
+  var prev=g.querySelector('.prev'),next=g.querySelector('.next');
+  if(prev)prev.addEventListener('click',function(){track.scrollBy({left:-track.clientWidth,behavior:'smooth'});});
+  if(next)next.addEventListener('click',function(){track.scrollBy({left:track.clientWidth,behavior:'smooth'});});
+  dots.forEach(function(d,j){d.addEventListener('click',function(){track.scrollTo({left:j*track.clientWidth,behavior:'smooth'});});});
+});
+document.querySelectorAll('.transcript .copy-btn').forEach(function(btn){
+  btn.addEventListener('click',function(e){
+    e.preventDefault();e.stopPropagation();
+    var det=btn.closest('.transcript'),p=det?det.querySelector('p'):null;
+    var text=p?p.textContent:'';
+    function done(ok){btn.textContent=ok?'Copied!':'Copy failed';btn.classList.toggle('copied',ok);
+      setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},1500);}
+    function fallback(){try{var ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.top='-9999px';document.body.appendChild(ta);
+      ta.focus();ta.select();var ok=document.execCommand('copy');document.body.removeChild(ta);done(ok);
+      }catch(err){done(false);}}
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){done(true);},fallback);
+    }else{fallback();}
+  });
+});
+</script></body></html>
