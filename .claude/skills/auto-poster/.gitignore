@@ -1,0 +1,2 @@
+# Never commit live Zernio credentials. The template (.env.example) is tracked.
+.env
