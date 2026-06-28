@@ -1,149 +1,114 @@
-# 📤 Zernio Autoposter — Install Guide
+# 🎬 Zernio Autoposter — Simple Setup
 
-Auto-post your videos to **Instagram + TikTok as drafts**, straight from a folder
-on your computer. Record a clip → it shows up as a draft in Zernio, ready for you
-to review and publish. No copy-pasting, no uploading by hand.
+Post your videos to **Instagram & TikTok as drafts** automatically.
+Set it up once (about 10 minutes). After that, it just works.
 
-It runs **on your own computer**, so your videos and your API key never leave
-your machine.
-
-⏱️ **Setup takes about 10 minutes, once.** After that it just works.
+**How it works:** you drop a video in a folder → it shows up as a draft in
+Zernio → you review and publish. That's it.
 
 ---
 
-## ✅ Before you start
-
-You'll need:
-
-- A **Windows or Mac** computer
-- A **Zernio account** with your Instagram and/or TikTok connected
-  (sign up / connect accounts at https://zernio.com)
-- About 10 minutes
+## What you need
+- A computer (Windows or Mac)
+- A Zernio account 👉 sign up at **zernio.com** and connect your Instagram / TikTok
 
 ---
 
-## Step 1 — Install Node (one time)
+## Step 1 — Install Node ▶️
+This is the free engine that runs the tool. You only do this once.
 
-Node is the free engine that runs the autoposter.
+1. Go to **nodejs.org**
+2. Click the big green **LTS** button.
+3. Open the file you downloaded and click **Next → Next → Install → Finish**.
 
-1. Go to **https://nodejs.org**
-2. Click the big green **"LTS"** button to download.
-3. Open the downloaded file and click through the installer
-   (**Next → Next → Install → Finish** on Windows; drag-to-install on Mac).
-   Accept all the defaults.
-
-> ✅ That's it — you never have to touch Node again.
+✅ Done. You never touch this again.
 
 ---
 
-## Step 2 — Get your Zernio API key
+## Step 2 — Get your Zernio key 🔑
 
-1. Log in at **https://zernio.com**
-2. Go to **Settings → API keys** (or "Developer" / "API" section).
-3. Click **Create / Generate key** and **copy it**. It starts with `sk_`.
+1. Log in at **zernio.com**
+2. Go to **Settings → API keys**
+3. Click **Create key** and **copy it** (it starts with `sk_`).
 
-🔒 **Keep this key private — it's like a password to your accounts. Never post it
-publicly or share it with anyone.**
-
----
-
-## Step 3 — Download the autoposter
-
-1. You were given a file called **`zernio.zip`** (in our community / by your coach).
-   Download it.
-2. **Unzip it:**
-   - **Windows:** right-click → **Extract All… → Extract**
-   - **Mac:** double-click the zip
-3. You'll get a **`zernio`** folder. Open it — you'll see files like
-   `setup`, `run-watcher`, `post-video`, and `autopost.mjs`.
-
-Put this folder somewhere easy to find, like your **Desktop**.
+🔒 **Keep this key private. It's like a password — never share it.**
 
 ---
 
-## Step 4 — First-time setup
+## Step 3 — Open the folder 📂
 
-This tells the autoposter your key and which folder to watch.
+1. Download **`zernio.zip`**.
+2. Unzip it:
+   - **Windows:** right-click → **Extract All → Extract**
+   - **Mac:** double-click it
+3. Open the **`zernio`** folder you get.
 
-### 🪟 Windows
-1. In the `zernio` folder, **double-click `setup.bat`**.
-2. When asked, **paste your API key** (right-click pastes) and press **Enter**.
-3. When asked for the **folder to watch**, paste the folder your videos save to,
-   for example:
-   ```
-   C:\Users\YourName\Videos\Captures
-   ```
-   Press **Enter**. Done — it saves your settings.
+---
 
-### 🍎 Mac
+## Step 4 — Set it up (one time) ⚙️
+
+**Windows:**
+1. Double-click **`setup.bat`**.
+2. **Paste your key** (right-click to paste) → press **Enter**.
+3. **Paste the folder your videos save to** → press **Enter**. Example:
+   `C:\Users\YourName\Videos\Captures`
+
+That's it — your settings are saved.
+
+**Mac:** see the short Mac steps at the bottom. 👇
+
+---
+
+## Step 5 — Post your videos 🚀
+
+**To post ONE video right now:**
+👉 Drag the video file onto **`post-video.bat`**.
+
+**To auto-post everything new:**
+👉 Double-click **`run-watcher.bat`** and leave the window open.
+Now any new video you drop into your folder posts automatically.
+
+Then open **Zernio → Drafts** to review and publish. 🎉
+
+---
+
+## Want a caption? ✍️ (optional)
+- Same caption every time: open the `.env` file and set
+  `ZERNIO_CAPTION=Your caption here #hashtags`
+- Caption for one video: put a text file next to it with the same name
+  (`myclip.mp4` → `myclip.txt`). What's in the text file becomes the caption.
+
+---
+
+## If something goes wrong 🆘
+
+| Problem | Fix |
+|---|---|
+| Window flashes and closes / says `'node' is not recognized` | Redo Step 1, then **restart your computer**. |
+| Says `ZERNIO_API_KEY is not set` | Redo Step 4 and make sure you pasted your key. |
+| Nothing happens when I drop a file | The watcher only posts **new** files added after it starts. Drop a fresh copy in, or use `post-video.bat`. |
+
+Still stuck? Post a screenshot in the community (cover your key!) and we'll help.
+
+---
+
+## 🍎 Mac setup (instead of Step 4)
 1. Open the **Terminal** app.
-2. Type `cd ` (with a space), then **drag the `zernio` folder into the Terminal
-   window** and press **Enter**.
-3. Create your settings file by running:
-   ```sh
+2. Type `cd ` (with a space), drag the `zernio` folder into the window, press **Enter**.
+3. Run these two lines:
+   ```
    cp .env.example .env
    open -e .env
    ```
-4. In the editor, set these two lines and save:
+4. Set your key and folder, then save:
    ```
    ZERNIO_API_KEY=sk_your_key_here
    ZERNIO_WATCH_DIR=/Users/YourName/Movies/Captures
    ```
+5. To post: `node autopost.mjs --once "/path/to/video.mp4"`
+   To auto-watch: `node autopost.mjs`
 
 ---
 
-## Step 5 — Use it 🎬
-
-### Option A — Watch a folder (automatic)
-Every new video dropped into your watched folder gets posted as a draft.
-
-- **Windows:** double-click **`run-watcher.bat`**
-- **Mac:** in Terminal (from the `zernio` folder) run `node autopost.mjs`
-
-A window opens and says it's watching. **Leave it open.** Now record or drop a new
-video into that folder — within a few seconds you'll see **`✔ draft created`**.
-Close the window to stop.
-
-### Option B — Post one specific video
-- **Windows:** **drag a video file onto `post-video.bat`**
-- **Mac:** `node autopost.mjs --once "/path/to/your/video.mp4"`
-
-Either way, open **Zernio → Drafts** to review and publish. 🎉
-
----
-
-## ✍️ Captions (optional)
-
-- Want the **same caption on every post?** Open your `.env` file and set:
-  ```
-  ZERNIO_CAPTION=Your default caption here #hashtags
-  ```
-- Want a caption for **one specific video?** Put a text file next to it with the
-  same name — e.g. `myclip.mp4` → `myclip.txt`. Whatever's in that text file
-  becomes that video's caption.
-
----
-
-## 🆘 Troubleshooting
-
-| What you see | Fix |
-|---|---|
-| Window flashes and closes, or **`'node' is not recognized`** | Node isn't installed or needs a restart. Redo Step 1, then **restart your computer**. |
-| **`ZERNIO_API_KEY is not set`** | Re-run setup (Step 4) and make sure you pasted your key. |
-| **`Platform "instagram" is not connected`** | Connect that account inside Zernio first, or remove it from `ZERNIO_PLATFORMS` in your `.env`. |
-| Video posts but looks cut off / incomplete | Your recording was still saving. Increase `ZERNIO_STABLE_MS` in `.env` (e.g. to `6000`). |
-| Nothing happens when I drop a file | The watcher only posts **new** files added *after* it starts. Drop a fresh copy in, or use `post-video` (Option B). |
-
-Still stuck? Post a screenshot of the window in the community and we'll help.
-
----
-
-## 🔒 A note on safety
-
-- Your **API key lives only on your computer** (in the `.env` file). It's never
-  uploaded anywhere and never shared.
-- **Never send your `.env` file or your key to anyone** — not even when asking for
-  help. Cover it in screenshots.
-- Each person uses **their own** Zernio key. Don't reuse someone else's.
-
-That's it — happy posting! 🚀
+🔒 **Remember:** your key stays on your own computer. Never share it, and never
+send your `.env` file to anyone.
