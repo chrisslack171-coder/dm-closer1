@@ -194,8 +194,11 @@ def post_format(item):
         return "Image"
     if t in ("clips", "reel", "reels"):
         return "Reel"
+    url = (get_permalink(item) or "").lower()
     if t in ("video", "graphvideo"):
-        return "Video"
+        # tokscript's get_instagram_user_reels returns type "video"; the /reel/
+        # permalink is what marks it a Reel rather than a feed video.
+        return "Reel" if "/reel/" in url else "Video"
     # multiple image URLs with no direct video -> carousel
     if len(get_image_urls(item)) > 1 and not get_video_url(item):
         return "Carousel"
