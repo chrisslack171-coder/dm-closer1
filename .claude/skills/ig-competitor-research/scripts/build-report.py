@@ -114,7 +114,9 @@ def post_card(p):
     bits.append(f'<div class="rank"><span class="{badge_cls}">#{rank}</span></div>')
     bits.append('<div class="media-col">')
     bits.append(gallery_html(p))
-    bits.append(f'<a class="ig-btn" href="{html.escape(p.get("url",""))}" target="_blank" rel="noopener">▶ View on Instagram</a>')
+    url = p.get("url", "")
+    src_label = "View on TikTok" if "tiktok.com" in url.lower() else "View on Instagram"
+    bits.append(f'<a class="ig-btn" href="{html.escape(url)}" target="_blank" rel="noopener">▶ {src_label}</a>')
     bits.append("</div>")
 
     bits.append('<div class="info">')
@@ -124,6 +126,9 @@ def post_card(p):
     bits.append("</div>")
     bits.append('<div class="pills">')
     bits.append(f'<span class="pill likes">♥ {html.escape(str(p.get("likes","")))}</span>')
+    views = str(p.get("views", "")).strip()
+    if views and views.lower() not in ("hidden", "—", "-1"):
+        bits.append(f'<span class="pill views">▶ {html.escape(views)} views</span>')
     olabel = (p.get("outlier_label") or "").strip()
     if olabel and olabel != "—":
         try:
@@ -235,6 +240,7 @@ h1{font-size:40px;line-height:1.05;font-weight:800;letter-spacing:-.02em;margin:
 .pill{font-size:13px;color:var(--muted);background:var(--surface2);border:1px solid var(--line);
   border-radius:999px;padding:4px 12px}
 .pill.likes{color:#ff8fb3}
+.pill.views{color:#8fb8ff}
 .pill.breakout{font-weight:700}
 .pill.breakout.hot{color:#ff6a4d;border-color:#5e2e27;background:rgba(255,90,60,.12)}
 .pill.breakout.warm{color:#feaa54;border-color:#5e4a27;background:rgba(254,170,84,.12)}
@@ -332,7 +338,7 @@ def assemble_from_dateroot(date_root):
     posts, missing = [], []
     for s in selection:
         post = {k: s.get(k, "") for k in
-                ("rank", "handle", "format", "likes", "comments", "date", "url", "jobdir",
+                ("rank", "handle", "format", "likes", "comments", "views", "date", "url", "jobdir",
                  "outlier_score", "outlier_label", "baseline")}
         pj = os.path.join(s.get("jobdir", ""), "post.json")
         analysis = {}
@@ -397,7 +403,7 @@ def build(manifest, out_html):
 <header><div class="kicker">Instagram Competitor Research</div>
 <h1>What's working in the niche</h1><div class="stats">{stats}</div></header>
 {pattern_html}{cards}
-<footer>Generated {html.escape(str(manifest.get("generated","")))} · ig-competitor-research · ranked by likes (no view data from source)</footer>
+<footer>Generated {html.escape(str(manifest.get("generated","")))} · ig-competitor-research · ranked by likes · view counts via tokscript</footer>
 </div><script>{JS}</script></body></html>"""
     with open(out_html, "w") as f:
         f.write(doc)
