@@ -1,0 +1,10 @@
+# Secrets — never commit your Zernio key
+zernio/.env
+.env
+
+# Autoposter ledger (lives in the watched folder, but ignore if copied here)
+.zernio-posted.json
+
+# Node
+node_modules/
+dist/
