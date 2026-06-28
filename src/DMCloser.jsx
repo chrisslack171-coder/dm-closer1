@@ -179,7 +179,7 @@ export default function DMCloser() {
             Work the whole <em style={{ color: GOLD }}>conversation.</em>
           </h1>
           <p style={{ color: "#cfc6b2", fontSize: 15, maxWidth: "56ch", margin: 0 }}>
-            Paste a door, a DM, or a call objection. Get your moves — then tell it what they said back and it reads the new spot, tracks the objection chain, and calls the next move. All the way to the close.
+            Paste a door, a DM, a sales call, or a launch objection. Get your moves — then tell it what they said back and it reads the new spot, tracks the objection chain, and calls the next move. All the way to the close.
           </p>
         </header>
 
@@ -189,7 +189,7 @@ export default function DMCloser() {
             <textarea
               value={text}
               onChange={e => setText(e.target.value)}
-              placeholder={'Paste a door situation ("they said not interested"), a DM thread, or a call objection…'}
+              placeholder={'Paste a door situation ("they said not interested"), a DM thread, a sales call, or a launch objection…'}
               style={{ width: "100%", minHeight: 120, padding: "13px 15px", background: PANEL, border: `1px solid ${LINE}`, borderRadius: 8, color: CREAM, fontSize: 15, fontFamily: "Georgia, serif", marginBottom: 14, resize: "vertical", boxSizing: "border-box" }}
             />
             <div style={{ marginBottom: 16 }}>
