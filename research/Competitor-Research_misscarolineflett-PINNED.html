@@ -1,0 +1,142 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IG Competitor Research — 2026-06-28</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔬</text></svg>">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0c0f;--surface:#15151b;--surface2:#1d1d25;--line:#2a2a34;
+  --text:#ededf2;--muted:#9a9aa9;--accent:#fa5a8e;--accent2:#feaa54;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);
+  font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;padding:0 0 80px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header{padding:56px 0 28px;border-bottom:1px solid var(--line);margin-bottom:36px}
+.kicker{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700}
+h1{font-size:40px;line-height:1.05;font-weight:800;letter-spacing:-.02em;margin:10px 0 18px}
+.stats{display:flex;flex-wrap:wrap;gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:999px;
+  padding:6px 14px;font-size:13px;color:var(--muted)}
+.stat b{color:var(--text);font-weight:700}
+.pattern{background:linear-gradient(135deg,rgba(250,90,142,.12),rgba(254,170,84,.08));
+  border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:14px;
+  padding:20px 22px;margin-bottom:40px}
+.pattern .lbl{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);font-weight:700;margin-bottom:8px}
+.pattern p{font-size:16px;color:#dcdce4}
+.card{display:grid;grid-template-columns:44px 340px 1fr;gap:24px;align-items:start;
+  background:var(--surface);border:1px solid var(--line);border-radius:18px;
+  padding:22px;margin-bottom:22px}
+.rank{position:sticky;top:18px}
+.badge{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;
+  background:var(--surface2);border:1px solid var(--line);font-weight:800;font-size:16px}
+.badge.gold{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a0b12;border:0}
+.media-col{width:340px}
+.gallery{position:relative;width:340px;aspect-ratio:4/5;background:var(--surface2);
+  border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.gallery.empty{display:grid;place-items:center;color:var(--muted);font-size:13px}
+.track{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;
+  scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+.track img{flex:0 0 100%;width:100%;height:100%;object-fit:contain;scroll-snap-align:center}
+.nav{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:34px;height:34px;
+  border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:20px;
+  cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(4px);opacity:0;transition:.15s}
+.gallery:hover .nav{opacity:1}
+.nav.prev{left:8px}.nav.next{right:8px}
+.counter{position:absolute;top:10px;right:10px;z-index:2;background:rgba(0,0,0,.6);
+  color:#fff;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;backdrop-filter:blur(4px)}
+.dots{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:2}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4)}
+.dot.active{background:#fff;width:18px;border-radius:3px}
+.ig-btn{display:block;text-align:center;margin-top:12px;padding:10px;border-radius:10px;
+  background:var(--surface2);border:1px solid var(--line);color:var(--text);
+  text-decoration:none;font-size:14px;font-weight:600;transition:.15s}
+.ig-btn:hover{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a0b12;border-color:transparent}
+.meta-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.handle{font-size:18px;font-weight:700}
+.tag{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  padding:4px 9px;border-radius:6px;background:var(--surface2);border:1px solid var(--line);color:var(--muted)}
+.tag-carousel{color:#7bb8ff;border-color:#27405e}
+.tag-reel,.tag-video{color:#ff9ec2;border-color:#5e2740}
+.tag-image{color:#9affc4;border-color:#27543c}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.pill{font-size:13px;color:var(--muted);background:var(--surface2);border:1px solid var(--line);
+  border-radius:999px;padding:4px 12px}
+.pill.likes{color:#ff8fb3}
+.pill.views{color:#8fb8ff}
+.pill.breakout{font-weight:700}
+.pill.breakout.hot{color:#ff6a4d;border-color:#5e2e27;background:rgba(255,90,60,.12)}
+.pill.breakout.warm{color:#feaa54;border-color:#5e4a27;background:rgba(254,170,84,.12)}
+.pill.breakout.cool{color:#9a9aa9}
+.lbl{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);font-weight:700;margin-bottom:6px}
+.hook{margin-bottom:16px}
+.hook p{font-size:20px;line-height:1.35;font-weight:700;letter-spacing:-.01em}
+.fmt{margin-bottom:16px}
+.fmt .chip{display:inline-block;font-size:14px;font-weight:700;color:var(--accent2);
+  background:rgba(254,170,84,.1);border:1px solid rgba(254,170,84,.32);
+  border-radius:8px;padding:5px 12px;text-transform:capitalize}
+.block{margin-bottom:16px}
+.block p{color:#d2d2dc}
+.transcript{margin-bottom:16px;background:var(--surface2);border:1px solid var(--line);
+  border-radius:10px;padding:0 14px}
+.transcript summary{display:flex;align-items:center;cursor:pointer;padding:11px 0;font-size:13px;
+  font-weight:600;color:var(--muted);list-style:none;letter-spacing:.04em;text-transform:uppercase}
+.transcript summary::-webkit-details-marker{display:none}
+.transcript summary:before{content:"▸";color:var(--accent);margin-right:9px}
+.transcript[open] summary:before{content:"▾"}
+.copy-btn{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--accent);background:var(--surface);border:1px solid var(--line);border-radius:7px;
+  padding:4px 11px;cursor:pointer;transition:.15s}
+.copy-btn:hover{background:var(--accent);color:#1a0b12;border-color:transparent}
+.copy-btn.copied{background:#2faa6a;color:#06210f;border-color:transparent}
+.transcript p{padding:0 0 14px;color:#c3c3cf;font-size:14.5px}
+.why{background:linear-gradient(135deg,rgba(250,90,142,.1),rgba(254,170,84,.06));
+  border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.why .lbl{color:var(--accent)}
+.why p{color:#e6e6ee}
+footer{text-align:center;color:var(--muted);font-size:13px;margin-top:48px}
+@media(max-width:760px){
+  .card{grid-template-columns:1fr;gap:16px}
+  .rank{position:static}.media-col,.gallery{width:100%}
+  h1{font-size:30px}
+}
+</style></head><body><div class="wrap">
+<header><div class="kicker">Instagram Competitor Research</div>
+<h1>What's working in the niche</h1><div class="stats"><span class="stat"><b>1</b> accounts</span><span class="stat"><b>3</b> posts</span><span class="stat">last 7 days</span><span class="stat">ranked by <b>likes</b></span><span class="stat">🔥 <b>breakout</b> = likes ÷ creator median</span><span class="stat">2026-06-28</span></div></header>
+<div class="pattern"><span class="lbl">Pattern</span><p>Her all-time bangers are cheaper to make than they look: two of the three are text-on-screen &#x27;value list / journey&#x27; reels set to small trending sounds — no filming, all value in the on-screen text and a long looping caption. Hooks are pure curiosity + a specific round number (&#x27;40K in 30 days&#x27;, &#x27;10 hooks&#x27;, &#x27;4 strategies&#x27;). The third is a broad spoken phone-hack demo for reach, captioned with the niche strategy. CTAs split two ways — engagement-bait (&#x27;drop &quot;I&#x27;m next&quot;&#x27;) and comment-keyword lead magnets (&#x27;comment 57&#x27;), the latter alone driving 25,351 comments. Takeaway: low-production text+audio value lists with round-number hooks, monetized by a comment-keyword → DM funnel.</p></div><article class="card"><div class="rank"><span class="badge gold">#1</span></div><div class="media-col"><div class="gallery empty"><span>media unavailable</span></div><a class="ig-btn" href="https://www.instagram.com/reel/CvOQ74RgIWK/" target="_blank" rel="noopener">▶ View on Instagram</a></div><div class="info"><div class="meta-row"><span class="handle">@misscarolineflett</span><span class="tag tag-reel">Reel</span></div><div class="pills"><span class="pill likes">♥ 107,042</span><span class="pill views">▶ 6,287,479 views</span><span class="pill breakout hot" title="107,042 likes vs @misscarolineflett&#x27;s 24645 median this week">🔥 4.3× breakout</span><span class="pill comments">💬 6,055</span><span class="pill date">Jul 28, 2023</span></div><div class="hook"><span class="lbl">Hook · on-screen text + music (no narration)</span><p>My 40K in 30 days journey 👇 (on-screen text over a trending sound)</p></div><div class="fmt"><span class="lbl">Format</span><span class="chip">text-on-screen value list</span></div><div class="block"><span class="lbl">Breakdown</span><p>A zero-production text-on-screen &#x27;journey&#x27; reel set to trending audio that packs a full 30-day Instagram-growth playbook into the on-screen text + caption.</p></div><details class="transcript"><summary><span class="lbl-inline">Transcript</span><button class="copy-btn" type="button">Copy</button></summary><p>(No spoken narration — a text-on-screen reel set to a small trending sound; the lyric audio is &#x27;Every damn day I&#x27;m hustling...&#x27;. All value lives in the on-screen text + a long looping caption: her 30-day growth playbook — post 2 reels/day; research the audience&#x27;s top goals/problems/questions and make reels about them; model a proven viral formula and add your spin; use strong TEXT hooks that are specific and use curiosity / a pain point / a desired result; trending sounds under 10K; optimise for COMMENTS over likes and reply with a question; pack value bombs so people save &amp; follow; write a value-rich caption because the reel loops while they read; build a series; and ask people to take action everywhere. CTA: &#x27;Drop &quot;I&#x27;m next&quot; in the comments.&#x27;)</p></details><div class="why"><span class="lbl">Why it worked</span><p>Curiosity + a big round-number result hook (&#x27;40K in 30 days&#x27;), near-zero production (text over a trending sound), and an engagement-bait CTA (&#x27;drop &quot;I&#x27;m next&quot;&#x27;) drove 6K+ comments and 6.3M views.</p></div></div></article><article class="card"><div class="rank"><span class="badge">#2</span></div><div class="media-col"><div class="gallery empty"><span>media unavailable</span></div><a class="ig-btn" href="https://www.instagram.com/reel/CuS760PgzcI/" target="_blank" rel="noopener">▶ View on Instagram</a></div><div class="info"><div class="meta-row"><span class="handle">@misscarolineflett</span><span class="tag tag-reel">Reel</span></div><div class="pills"><span class="pill likes">♥ 24,645</span><span class="pill views">▶ 758,409 views</span><span class="pill breakout cool" title="24,645 likes vs @misscarolineflett&#x27;s 24645 median this week">1× breakout</span><span class="pill comments">💬 612</span><span class="pill date">Jul 5, 2023</span></div><div class="hook"><span class="lbl">Hook · spoken (screen-recording demo)</span><p>Here&#x27;s an Instagram hack you might have missed.</p></div><div class="fmt"><span class="lbl">Format</span><span class="chip">screen-recording demo</span></div><div class="block"><span class="lbl">Breakdown</span><p>A spoken iPhone hack demo (Control Center → Video Effects → Portrait On for a blurred filming background), captioned with her separate &#x27;4 reel strategies&#x27;.</p></div><details class="transcript"><summary><span class="lbl-inline">Transcript</span><button class="copy-btn" type="button">Copy</button></summary><p>Here&#x27;s an Instagram hack you might have missed. The next time you go to film a story or a reel, swipe down from the top of your screen, tap Video Effects on the upper left, then tap Portrait Off to Portrait On, then go back to your filming screen, and now you have this awesome blurry background. Save this for later and follow for more Instagram hacks.</p></details><div class="why"><span class="lbl">Why it worked</span><p>The video is a broadly useful phone hack (max reach) while the caption delivers the niche &#x27;4 strategies&#x27; — the spoken hook is NOT the offer; reach is borrowed by the hack and funneled by the caption.</p></div></div></article><article class="card"><div class="rank"><span class="badge">#3</span></div><div class="media-col"><div class="gallery empty"><span>media unavailable</span></div><a class="ig-btn" href="https://www.instagram.com/reel/CulLYV2AWyv/" target="_blank" rel="noopener">▶ View on Instagram</a></div><div class="info"><div class="meta-row"><span class="handle">@misscarolineflett</span><span class="tag tag-reel">Reel</span></div><div class="pills"><span class="pill likes">♥ 21,112</span><span class="pill views">▶ 930,524 views</span><span class="pill breakout cool" title="21,112 likes vs @misscarolineflett&#x27;s 24645 median this week">0.9× breakout</span><span class="pill comments">💬 25,351</span><span class="pill date">Jul 12, 2023</span></div><div class="hook"><span class="lbl">Hook · on-screen text + music (no narration)</span><p>Scroll-stopping hooks — 10 templates 👇 (on-screen text over a trending sound)</p></div><div class="fmt"><span class="lbl">Format</span><span class="chip">listicle (10 hook templates)</span></div><div class="block"><span class="lbl">Breakdown</span><p>A text-on-screen listicle of 10 reusable hook templates set to trending audio, with a comment-&#x27;57&#x27; lead-magnet CTA.</p></div><details class="transcript"><summary><span class="lbl-inline">Transcript</span><button class="copy-btn" type="button">Copy</button></summary><p>(No spoken narration — text-on-screen reel over a trending sound. The value is a swipe-file of 10 fill-in-the-blank hook templates in the caption: 1) Here&#x27;s how I [got result] in 5 simple steps. 2) This may be controversial, but... 3) Top 5 tools for [result/topic]. 4) This is your reminder to... 5) Here&#x27;s how you&#x27;re finally going to [get result] in 2023. 6) If you&#x27;re nervous about [topic], TRY THIS. 7) My favourite [topic] hack most people don&#x27;t know. 8) Stop wasting time doing [behaviour]. Try this instead. 9) Top 3 mistakes that are costing you [outcome]. 10) Steal my [topic] strategy. CTA: comment &#x27;57&#x27; for the free Viral Hooks Cheat Sheet.)</p></details><div class="why"><span class="lbl">Why it worked</span><p>A pure value swipe-file (10 hooks people screenshot) plus a comment-keyword lead magnet drove 25,351 comments — the keyword CTA manufactures comments, and comment volume is what the algorithm rewards with reach.</p></div></div></article>
+<footer>Generated 2026-06-28 · ig-competitor-research · ranked by likes · view counts via tokscript</footer>
+</div><script>
+document.querySelectorAll('.gallery[data-n]').forEach(function(g){
+  var track=g.querySelector('.track'), counter=g.querySelector('.counter');
+  var dots=[].slice.call(g.querySelectorAll('.dot'));
+  var n=parseInt(g.getAttribute('data-n'),10);
+  function idx(){return Math.round(track.scrollLeft/track.clientWidth);}
+  function update(){var i=idx();if(counter)counter.textContent=(i+1)+' / '+n;
+    dots.forEach(function(d,j){d.classList.toggle('active',j===i);});}
+  track.addEventListener('scroll',function(){window.requestAnimationFrame(update);});
+  var prev=g.querySelector('.prev'),next=g.querySelector('.next');
+  if(prev)prev.addEventListener('click',function(){track.scrollBy({left:-track.clientWidth,behavior:'smooth'});});
+  if(next)next.addEventListener('click',function(){track.scrollBy({left:track.clientWidth,behavior:'smooth'});});
+  dots.forEach(function(d,j){d.addEventListener('click',function(){track.scrollTo({left:j*track.clientWidth,behavior:'smooth'});});});
+});
+document.querySelectorAll('.transcript .copy-btn').forEach(function(btn){
+  btn.addEventListener('click',function(e){
+    e.preventDefault();e.stopPropagation();
+    var det=btn.closest('.transcript'),p=det?det.querySelector('p'):null;
+    var text=p?p.textContent:'';
+    function done(ok){btn.textContent=ok?'Copied!':'Copy failed';btn.classList.toggle('copied',ok);
+      setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},1500);}
+    function fallback(){try{var ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.top='-9999px';document.body.appendChild(ta);
+      ta.focus();ta.select();var ok=document.execCommand('copy');document.body.removeChild(ta);done(ok);
+      }catch(err){done(false);}}
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){done(true);},fallback);
+    }else{fallback();}
+  });
+});
+</script></body></html>
