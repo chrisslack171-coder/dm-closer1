@@ -1,0 +1,13 @@
+{
+  "_comment": "OPTIONAL — only for the Premiere Pro off-ramp (the to-premiere skill). To enable: 1) npm i -g premiere-pro-mcp && premiere-pro-mcp --install-cep  2) copy this file to .mcp.json  3) restart Claude Code  4) open Premiere and start the MCP Bridge panel. The path below resolves via your global npm root so it works on Apple Silicon AND Intel Macs. NOTE: not supported from inside WSL — Premiere runs as a native Windows app, but this MCP host + its /tmp bridge dir live in the Linux userland, so they can't reach each other across the WSL boundary. On Windows, finish in HyperFrames (the default path) instead. If you don't use Premiere, do nothing — leave this as .example.",
+  "mcpServers": {
+    "premiere-pro": {
+      "command": "npx",
+      "args": ["-y", "premiere-pro-mcp"],
+      "env": {
+        "PREMIERE_TEMP_DIR": "/tmp/premiere-mcp-bridge",
+        "PREMIERE_TIMEOUT_MS": "60000"
+      }
+    }
+  }
+}

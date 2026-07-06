@@ -1,0 +1,31 @@
+# macOS
+.DS_Store
+
+# Secrets — never commit
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Render scratch / intermediates (regenerable — see prune.sh)
+work-*/
+/tmp/video-editor/
+
+# Heavy media a client shouldn't track. Source raw + final outputs are local-only;
+# the pipeline regenerates everything in between. Comment these out if you DO want
+# to version your footage.
+projects/*/raw/
+projects/*/outputs/
+projects/*/broll/
+projects/*/captures/
+
+# HyperFrames regenerable caches (rebuilt by setup-assets.sh / render-all.sh)
+projects/*/hf-*/renders/
+projects/*/hf-*/assets/
+
+# Build output of package-for-client.sh
+packaging/dist/
