@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 // VIRAL FLIPPER — batch pipeline, protected frontend.
-// Paste saved Instagram post/reel URLs -> server extracts video + transcript
-// (/api/extract) -> server flips each script into YOUR voice (/api/flip) ->
-// export a CSV (competitor script + your script) ready for HeyGen bulk /
-// batch faceless-video creation. No API keys ever touch this file.
+// Paste Instagram / TikTok / YouTube (or direct .mp4) URLs -> server extracts
+// the spoken script (/api/extract) -> server reverse-engineers the viral
+// blueprint AND flips each script into YOUR voice (/api/flip) -> remix any
+// result with custom instructions (every version saved) -> export a CSV
+// (competitor script + your script) ready for HeyGen bulk faceless videos.
+// Your library persists on this device. No API keys ever touch this file.
 
 const GOLD = "#C9A227";
 const INK = "#14110c";
@@ -24,6 +26,7 @@ const btn = { background: GOLD, color: INK, border: "none", borderRadius: 8, pad
 const ghost = { background: "transparent", color: GOLD, border: `1px solid ${GOLD}`, borderRadius: 8, padding: "8px 16px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "Helvetica Neue, Arial, sans-serif" };
 const lbl = { display: "block", fontFamily: "Helvetica Neue, Arial, sans-serif", fontSize: 12, letterSpacing: 1, textTransform: "uppercase", color: MUT, marginBottom: 7 };
 const ta = { width: "100%", boxSizing: "border-box", background: PANEL2, color: CREAM, border: `1px solid ${LINE}`, borderRadius: 8, padding: 12, fontSize: 14, fontFamily: "Helvetica Neue, Arial, sans-serif", resize: "vertical" };
+const chip = { display: "inline-block", background: PANEL2, border: `1px solid ${LINE}`, borderRadius: 999, padding: "4px 12px", fontSize: 12, color: CREAM, marginRight: 8, marginBottom: 6 };
 
 const VOICE_EXAMPLE = `Who I am: sales coach, 1,000+ closes, started door-to-door.
 Niche: coaches & course creators who can't close DMs into sales.
@@ -50,53 +53,84 @@ function parseJSON(t, fb) {
   return fb;
 }
 
+function fmtCount(n) {
+  if (n == null) return null;
+  if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
+  if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, "") + "K";
+  return String(n);
+}
+
 function csvCell(v) {
   const s = String(v == null ? "" : v);
   return '"' + s.replace(/"/g, '""') + '"';
 }
 
 function buildCSV(rows) {
-  const header = ["title", "competitor_handle", "source_url", "hook_type", "competitor_script", "my_script"];
+  const header = ["title", "platform", "competitor_handle", "source_url", "views", "hook_type", "tone", "cta", "competitor_script", "my_script"];
   const lines = [header.join(",")];
   for (const r of rows) {
+    const bp = r.blueprint || {};
+    const cur = (r.versions && r.versions[r.vIdx]) || {};
     lines.push([
-      csvCell(r.title), csvCell(r.username ? "@" + r.username : ""), csvCell(r.url),
-      csvCell(r.hookType), csvCell(r.transcript), csvCell(r.myScript),
+      csvCell(r.title), csvCell(r.platform), csvCell(r.username ? "@" + r.username : ""),
+      csvCell(r.url), csvCell(r.playCount), csvCell(bp.hook_type), csvCell(bp.tone),
+      csvCell(bp.cta), csvCell(r.transcript), csvCell(cur.script),
     ].join(","));
   }
   return lines.join("\r\n");
 }
 
+const FRESH = (u, i) => ({
+  id: Date.now() + "_" + i, url: u, platform: "", status: "queued",
+  username: "", transcript: "", caption: "", coverUrl: "", playCount: null, likes: null,
+  title: "", blueprint: null, why: "", versions: [], vIdx: 0, remixNote: "", error: "",
+});
+
 export default function ViralFlipper() {
   const [voice, setVoice] = useState("");
   const [urls, setUrls] = useState("");
-  const [rows, setRows] = useState([]); // {id,url,status,username,transcript,caption,title,hookType,myScript,error}
+  const [rows, setRows] = useState([]);
   const [running, setRunning] = useState(false);
+  const loaded = useRef(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("vf_voice");
-    if (saved) setVoice(saved);
+    try {
+      const v = localStorage.getItem("vf_voice");
+      if (v) setVoice(v);
+      const lib = JSON.parse(localStorage.getItem("vf_library") || "[]");
+      if (Array.isArray(lib)) setRows(lib.map((r) => (r.status === "done" ? r : { ...r, status: "error", error: r.error || "interrupted" })));
+    } catch (e) {}
+    loaded.current = true;
   }, []);
+  useEffect(() => { if (loaded.current) localStorage.setItem("vf_voice", voice); }, [voice]);
   useEffect(() => {
-    localStorage.setItem("vf_voice", voice);
-  }, [voice]);
+    if (!loaded.current) return;
+    try { localStorage.setItem("vf_library", JSON.stringify(rows)); } catch (e) {}
+  }, [rows]);
 
-  const patch = (id, p) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...p } : r)));
+  const patch = (id, p) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...(typeof p === "function" ? p(r) : p) } : r)));
 
   async function processRow(row, voiceProfile) {
     try {
       patch(row.id, { status: "extracting", error: "" });
       const ex = await post("/api/extract", { url: row.url });
-      patch(row.id, { status: "flipping", username: ex.username, transcript: ex.transcript, caption: ex.caption });
+      patch(row.id, {
+        status: "flipping", platform: ex.platform, username: ex.username,
+        transcript: ex.transcript, caption: ex.caption, coverUrl: ex.coverUrl || "",
+        playCount: ex.playCount, likes: ex.likes,
+      });
       const fl = await post("/api/flip", {
-        transcript: ex.transcript, caption: ex.caption, username: ex.username, voiceProfile,
+        transcript: ex.transcript, caption: ex.caption, username: ex.username,
+        coverUrl: ex.coverUrl || undefined, voiceProfile,
       });
       const j = parseJSON(fl.text, {});
       patch(row.id, {
         status: "done",
         title: j.title || "Untitled",
-        hookType: j.hook_type || "",
-        myScript: j.script || fl.text,
+        blueprint: j.blueprint || null,
+        why: j.why_it_worked || "",
+        versions: [{ script: j.script || fl.text, note: "original flip" }],
+        vIdx: 0,
       });
     } catch (e) {
       patch(row.id, { status: "error", error: e.message || "failed" });
@@ -105,17 +139,12 @@ export default function ViralFlipper() {
 
   async function run() {
     if (!voice.trim()) { alert("Fill in your voice profile first — that's what makes the flip YOURS."); return; }
-    const list = urls.split("\n").map((s) => s.trim()).filter((s) => s.includes("instagram.com"));
-    if (!list.length) { alert("Paste at least one instagram.com post/reel URL (one per line)."); return; }
-
-    const fresh = list.map((u, i) => ({
-      id: Date.now() + "_" + i, url: u, status: "queued",
-      username: "", transcript: "", caption: "", title: "", hookType: "", myScript: "", error: "",
-    }));
+    const list = urls.split("\n").map((s) => s.trim()).filter(Boolean);
+    if (!list.length) { alert("Paste at least one video URL (one per line)."); return; }
+    const fresh = list.map(FRESH);
     setRows((rs) => [...rs.filter((r) => r.status === "done"), ...fresh]);
+    setUrls("");
     setRunning(true);
-
-    // simple worker pool
     let idx = 0;
     const worker = async () => {
       while (idx < fresh.length) {
@@ -127,8 +156,28 @@ export default function ViralFlipper() {
     setRunning(false);
   }
 
-  async function retry(row) {
-    await processRow(row, voice);
+  async function remix(row) {
+    const note = (row.remixNote || "").trim();
+    if (!note) { alert('Tell it what to change — e.g. "make it funnier" or "shorten to 30s".'); return; }
+    const cur = row.versions[row.vIdx];
+    patch(row.id, { status: "remixing" });
+    try {
+      const fl = await post("/api/flip", {
+        transcript: row.transcript, caption: row.caption, username: row.username,
+        voiceProfile: voice, previousScript: cur ? cur.script : "", instructions: note,
+      });
+      const j = parseJSON(fl.text, {});
+      patch(row.id, (r) => ({
+        status: "done", remixNote: "",
+        versions: [...r.versions, { script: j.script || fl.text, note }],
+        vIdx: r.versions.length,
+        blueprint: j.blueprint || r.blueprint,
+        title: j.title || r.title,
+      }));
+    } catch (e) {
+      patch(row.id, { status: "done", error: "" });
+      alert("Remix failed: " + (e.message || "unknown"));
+    }
   }
 
   function exportCSV() {
@@ -142,6 +191,10 @@ export default function ViralFlipper() {
     URL.revokeObjectURL(a.href);
   }
 
+  function clearLibrary() {
+    if (confirm("Clear your whole library? The CSV is your backup — export first if you need it.")) setRows([]);
+  }
+
   const doneCount = rows.filter((r) => r.status === "done").length;
 
   return (
@@ -149,10 +202,10 @@ export default function ViralFlipper() {
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ fontSize: 12, letterSpacing: 3, textTransform: "uppercase", color: GOLD, marginBottom: 6 }}>The Digital Closer</div>
         <h1 style={{ fontSize: 32, margin: "0 0 4px" }}>Viral Flipper</h1>
-        <p style={{ color: MUT, marginTop: 0, maxWidth: 720 }}>
-          Paste saved Instagram reels. It pulls the video's script, flips it into <b style={{ color: CREAM }}>your</b> voice
-          (same viral structure, your positioning), and exports a CSV — competitor script beside yours — ready for
-          HeyGen bulk voice + faceless video creation.
+        <p style={{ color: MUT, marginTop: 0, maxWidth: 740 }}>
+          Paste viral videos — Instagram, TikTok, YouTube, or a direct file link. It pulls each script, reverse-engineers
+          the <b style={{ color: CREAM }}>blueprint</b> (hook, structure, pacing, CTA), flips it into <b style={{ color: CREAM }}>your</b> voice,
+          lets you remix every result, and exports a CSV ready for HeyGen bulk voice + faceless-video creation.
         </p>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 24 }}>
@@ -164,58 +217,99 @@ export default function ViralFlipper() {
             )}
           </div>
           <div style={{ background: PANEL, border: `1px solid ${LINE}`, borderRadius: 12, padding: 18 }}>
-            <label style={lbl}>2 · Saved post URLs — one per line</label>
-            <textarea rows={9} style={ta} value={urls} onChange={(e) => setUrls(e.target.value)} placeholder={"https://www.instagram.com/reel/ABC123.../\nhttps://www.instagram.com/reel/XYZ789.../"} />
-            <div style={{ marginTop: 12, display: "flex", gap: 10, alignItems: "center" }}>
+            <label style={lbl}>2 · Video URLs — one per line, any platform</label>
+            <textarea rows={9} style={ta} value={urls} onChange={(e) => setUrls(e.target.value)} placeholder={"https://www.instagram.com/reel/ABC123.../\nhttps://www.tiktok.com/@handle/video/123456\nhttps://www.youtube.com/shorts/XYZ789"} />
+            <div style={{ marginTop: 12, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
               <button style={{ ...btn, opacity: running ? 0.6 : 1 }} disabled={running} onClick={run}>
                 {running ? "Working…" : "Extract & Flip"}
               </button>
-              <button style={ghost} onClick={exportCSV} disabled={!doneCount}>
-                Export CSV ({doneCount})
-              </button>
+              <button style={ghost} onClick={exportCSV} disabled={!doneCount}>Export CSV ({doneCount})</button>
+              {rows.length > 0 && <button style={{ ...ghost, borderColor: LINE, color: MUT }} onClick={clearLibrary}>Clear library</button>}
             </div>
           </div>
         </div>
 
         {rows.length > 0 && (
           <div style={{ marginTop: 28 }}>
-            <label style={lbl}>3 · Results — edit anything before export</label>
-            {rows.map((r) => (
-              <div key={r.id} style={{ background: PANEL, border: `1px solid ${LINE}`, borderRadius: 12, padding: 18, marginBottom: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-                  <div style={{ fontSize: 13, color: MUT, wordBreak: "break-all" }}>
-                    {r.username ? <b style={{ color: GOLD }}>@{r.username}</b> : null} {r.url}
+            <label style={lbl}>3 · Library — {doneCount} flipped · edit anything before export</label>
+            {rows.map((r) => {
+              const bp = r.blueprint || {};
+              const cur = r.versions[r.vIdx] || { script: "" };
+              return (
+                <div key={r.id} style={{ background: PANEL, border: `1px solid ${LINE}`, borderRadius: 12, padding: 18, marginBottom: 14 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+                    <div style={{ fontSize: 13, color: MUT, wordBreak: "break-all" }}>
+                      {r.username ? <b style={{ color: GOLD }}>@{r.username}</b> : null}
+                      {r.platform ? <span style={{ textTransform: "uppercase", letterSpacing: 1, fontSize: 11, marginLeft: 8 }}>{r.platform}</span> : null}
+                      {r.playCount != null && <span style={{ marginLeft: 8, color: CREAM }}>{fmtCount(r.playCount)} views</span>}
+                      {r.likes != null && <span style={{ marginLeft: 8 }}>{fmtCount(r.likes)} likes</span>}
+                      <span style={{ marginLeft: 8 }}>{r.url}</span>
+                    </div>
+                    <div style={{ fontSize: 12, letterSpacing: 1, textTransform: "uppercase", color: r.status === "done" ? "#7bc47f" : r.status === "error" ? "#e0a07a" : GOLD }}>
+                      {r.status}{r.error ? " — " + r.error : ""}
+                      {r.status === "error" && (
+                        <button style={{ ...ghost, marginLeft: 10, padding: "4px 10px", fontSize: 12 }} onClick={() => processRow(r, voice)}>Retry</button>
+                      )}
+                    </div>
                   </div>
-                  <div style={{ fontSize: 12, letterSpacing: 1, textTransform: "uppercase", color: r.status === "done" ? "#7bc47f" : r.status === "error" ? "#e0a07a" : GOLD }}>
-                    {r.status}{r.error ? " — " + r.error : ""}
-                    {r.status === "error" && (
-                      <button style={{ ...ghost, marginLeft: 10, padding: "4px 10px", fontSize: 12 }} onClick={() => retry(r)}>Retry</button>
-                    )}
-                  </div>
+
+                  {r.blueprint && (
+                    <div style={{ marginTop: 12 }}>
+                      <div>
+                        {bp.hook_type && <span style={chip}><b style={{ color: GOLD }}>hook</b> {bp.hook_type}</span>}
+                        {bp.tone && <span style={chip}><b style={{ color: GOLD }}>tone</b> {bp.tone}</span>}
+                        {bp.pacing && <span style={chip}><b style={{ color: GOLD }}>pacing</b> {bp.pacing}</span>}
+                        {bp.cta && <span style={chip}><b style={{ color: GOLD }}>cta</b> {bp.cta}</span>}
+                      </div>
+                      {Array.isArray(bp.structure) && bp.structure.length > 0 && (
+                        <div style={{ fontSize: 13, color: MUT, marginTop: 6 }}>
+                          {bp.structure.map((b, i) => <span key={i}>{i > 0 && <span style={{ color: GOLD }}> → </span>}{b}</span>)}
+                        </div>
+                      )}
+                      {r.why && <div style={{ fontSize: 13, color: CREAM, marginTop: 6, fontStyle: "italic" }}>Why it worked: {r.why}</div>}
+                    </div>
+                  )}
+
+                  {(r.transcript || cur.script) && (
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 12 }}>
+                      <div>
+                        <label style={lbl}>Their script (as spoken)</label>
+                        <textarea rows={7} style={ta} value={r.transcript} onChange={(e) => patch(r.id, { transcript: e.target.value })} />
+                      </div>
+                      <div>
+                        <label style={lbl}>Your script{r.title ? " — " + r.title : ""}</label>
+                        {r.versions.length > 1 && (
+                          <div style={{ marginBottom: 6 }}>
+                            {r.versions.map((v, i) => (
+                              <button key={i} title={v.note}
+                                style={{ ...ghost, padding: "3px 10px", fontSize: 12, marginRight: 6, background: i === r.vIdx ? GOLD : "transparent", color: i === r.vIdx ? INK : GOLD }}
+                                onClick={() => patch(r.id, { vIdx: i })}>v{i + 1}</button>
+                            ))}
+                          </div>
+                        )}
+                        <textarea rows={7} style={ta} value={cur.script}
+                          onChange={(e) => patch(r.id, (row) => ({ versions: row.versions.map((v, i) => (i === row.vIdx ? { ...v, script: e.target.value } : v)) }))} />
+                        {r.status === "done" && (
+                          <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                            <input style={{ ...ta, padding: "8px 12px", flex: 1 }} placeholder='Remix: "make it funnier", "shorten to 30s"...'
+                              value={r.remixNote || ""} onChange={(e) => patch(r.id, { remixNote: e.target.value })}
+                              onKeyDown={(e) => { if (e.key === "Enter") remix(r); }} />
+                            <button style={ghost} onClick={() => remix(r)}>Remix</button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {(r.transcript || r.myScript) && (
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 12 }}>
-                    <div>
-                      <label style={lbl}>Their script (as spoken)</label>
-                      <textarea rows={7} style={ta} value={r.transcript} onChange={(e) => patch(r.id, { transcript: e.target.value })} />
-                    </div>
-                    <div>
-                      <label style={lbl}>
-                        Your script{r.title ? " — " + r.title : ""}{r.hookType ? " · " + r.hookType : ""}
-                      </label>
-                      <textarea rows={7} style={ta} value={r.myScript} onChange={(e) => patch(r.id, { myScript: e.target.value })} />
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
         <p style={{ color: MUT, fontSize: 13, marginTop: 30, maxWidth: 760 }}>
-          CSV columns: title · competitor_handle · source_url · hook_type · competitor_script · my_script.
-          In HeyGen: create one faceless template with a {"{{my_script}}"} variable, pick your cloned voice,
-          then Bulk Create → upload this CSV → it renders one video per row.
+          CSV columns: title · platform · competitor_handle · source_url · views · hook_type · tone · cta ·
+          competitor_script · my_script. In HeyGen: one faceless template with a {"{{my_script}}"} variable +
+          your cloned voice → Bulk Create → upload this CSV → one video per row.
         </p>
       </div>
     </div>
