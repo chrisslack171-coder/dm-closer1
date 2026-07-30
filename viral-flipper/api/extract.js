@@ -11,8 +11,9 @@
 //   .mp4 link -> straight to Whisper
 //
 // SETUP (Vercel -> Project -> Settings -> Environment Variables):
-//   APIFY_TOKEN     — console.apify.com (pay-per-result actors)
-//   OPENAI_API_KEY  — used ONLY for Whisper transcription
+//   APIFY_TOKEN     — console.apify.com (free plan includes $5/mo credit)
+//   GROQ_API_KEY    — console.groq.com — FREE-tier Whisper transcription
+//   OPENAI_API_KEY  — optional paid fallback; only needed if no GROQ_API_KEY
 // =============================================================================
 
 const ALLOWED = [
@@ -82,7 +83,7 @@ function vttToText(vtt) {
   return out.join(" ").trim();
 }
 
-async function transcribeWhisper(videoUrl, key) {
+async function transcribeWhisper(videoUrl, groqKey, openaiKey) {
   const vr = await fetch(videoUrl);
   if (!vr.ok) throw new Error("Couldn't download the video file (" + vr.status + ")");
   const buf = await vr.arrayBuffer();
@@ -92,10 +93,15 @@ async function transcribeWhisper(videoUrl, key) {
   }
   const fd = new FormData();
   fd.append("file", new Blob([buf], { type: "video/mp4" }), "clip.mp4");
-  fd.append("model", "whisper-1");
-  const tr = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+  // Groq's free tier runs Whisper at no cost; OpenAI is the paid fallback.
+  const useGroq = !!groqKey;
+  fd.append("model", useGroq ? "whisper-large-v3" : "whisper-1");
+  const endpoint = useGroq
+    ? "https://api.groq.com/openai/v1/audio/transcriptions"
+    : "https://api.openai.com/v1/audio/transcriptions";
+  const tr = await fetch(endpoint, {
     method: "POST",
-    headers: { Authorization: "Bearer " + key },
+    headers: { Authorization: "Bearer " + (useGroq ? groqKey : openaiKey) },
     body: fd,
   });
   if (!tr.ok) {
@@ -192,9 +198,10 @@ export default async function handler(req, res) {
   if (!originAllowed(req)) return res.status(403).json({ error: "Forbidden" });
 
   const apifyToken = process.env.APIFY_TOKEN;
+  const groqKey = process.env.GROQ_API_KEY;
   const openaiKey = process.env.OPENAI_API_KEY;
-  if (!apifyToken || !openaiKey) {
-    return res.status(500).json({ error: "Server not configured (APIFY_TOKEN / OPENAI_API_KEY)" });
+  if (!apifyToken || (!groqKey && !openaiKey)) {
+    return res.status(500).json({ error: "Server not configured (APIFY_TOKEN + GROQ_API_KEY or OPENAI_API_KEY)" });
   }
 
   const { url } = req.body || {};
@@ -216,7 +223,7 @@ export default async function handler(req, res) {
     let transcript = post.transcript;
     if (!transcript) {
       if (!post.videoUrl) throw new Error("Couldn't get a downloadable video for that post");
-      transcript = await transcribeWhisper(post.videoUrl, openaiKey);
+      transcript = await transcribeWhisper(post.videoUrl, groqKey, openaiKey);
     }
     if (!transcript) throw new Error("No speech detected in this video");
 

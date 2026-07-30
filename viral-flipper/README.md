@@ -34,10 +34,13 @@ serverless functions (`api/`), never in the browser.
 1. Push this repo to GitHub (already done if you're reading this on GitHub).
 2. Vercel → **Add New Project** → import this repo → set **Root Directory**
    to `viral-flipper` (this makes it its own app, separate from DM Closer).
-3. Settings → Environment Variables, add all three, then redeploy:
-   - `APIFY_TOKEN` — console.apify.com → Settings → API tokens. The
-     Instagram Scraper actor is pay-per-result (fractions of a cent per post).
-   - `OPENAI_API_KEY` — only used for Whisper transcription (~$0.006/min).
+3. Settings → Environment Variables, then redeploy:
+   - `APIFY_TOKEN` — console.apify.com → Settings → API tokens. The free
+     plan includes ~$5/month of credit — at fractions of a cent per post
+     that covers hundreds of extractions monthly before you pay anything.
+   - `GROQ_API_KEY` — console.groq.com → API Keys. Groq runs Whisper on a
+     genuinely FREE tier — this makes transcription cost $0. (Or set
+     `OPENAI_API_KEY` instead for paid OpenAI Whisper; Groq wins if both set.)
    - `ANTHROPIC_API_KEY` — the script flip (same key as DM Closer works).
 4. Open the Vercel URL, paste your voice profile once (it saves locally),
    drop in reel URLs, hit **Extract & Flip**, export the CSV.
