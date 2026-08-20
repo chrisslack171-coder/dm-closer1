@@ -1,0 +1,380 @@
+EFFECTS BREAKDOWN REFERENCE — SEEDANCE 2.0 / 30 SECOND EDITION
+Calibration document. Read before writing any prompt.
+Purpose: set the DETAIL LEVEL and the LANGUAGE. Do not copy the content of the
+examples — copy the granularity, the naming precision, and the structure.
+
+
+================================================================================
+PART A — EFFECT NAMING VOCABULARY
+================================================================================
+
+Name every effect with a modifier. The bare noun is never enough.
+
+SPEED MANIPULATION
+  speed ramp (acceleration)          — real-time into fast, motion blur increases
+  speed ramp (deceleration)          — fast into slow, blur bleeds off
+  ramp-in / ramp-out pair            — accelerate then decelerate across one beat
+  sustained slow motion              — always state a percentage, e.g. "approx. 20-25% speed"
+  frozen beat / near-stop            — approx. 5% speed, 8-15 frames, then release
+  time-stutter (step framing)        — motion drops to discrete steps, 3-5 steps per second
+  real-time reset                    — deliberate return to 100% speed; a breathing moment
+
+CAMERA MOVEMENT
+  push-in (dolly)                    — physical approach, parallax present
+  digital zoom (scale-in)            — frame scales, no parallax
+  pull-back reveal                   — subject stays sized, world opens behind
+  orbit / arc (state direction + degrees, e.g. "clockwise arc, approx. 90°")
+  whip pan (state direction + smear length, e.g. "left-to-right, 6-8 frames of smear")
+  handheld drift                     — low-amplitude float, approx. 1-2% frame movement
+  locked-off                         — dead still; use it as contrast, not as a default
+  crane / boom (rise or descend, state the vertical distance in body-heights)
+  low-angle tracking                 — camera below eyeline, moving with subject
+  frame rotation (state degrees + direction, e.g. "clockwise, approx. 15-20°")
+
+DIGITAL / OPTICAL
+  motion blur smear                  — directional streak on fast movement
+  lens flare (anamorphic streak / circular ghost — say which)
+  bloom bleed                        — highlights blow out and spill into midtones
+  chromatic fringing                 — colour separation at frame edges under stress
+  light wrap                         — background light bleeding around subject edge
+  atmospheric haze / god rays        — volumetric light through dust, mist, or steam
+  particle wash                      — dust, sand, spray, embers crossing frame
+  rack focus (state from-what to-what)
+  shallow depth (state approximate stop feel, e.g. "T1.5-look, background dissolved")
+  grain lift                         — texture increases in the darker segment
+
+TRANSITIONS (these are shots, not connectors)
+  whip-pan transition                — motion smear carries across a cut
+  light-flash / bloom transition     — highlight blows to white, next shot resolves out of it
+  match-cut on shape or motion (name the shape or the vector being matched)
+  smear dissolve                     — outgoing frame streaks in the direction of travel
+  cut-on-impact                      — hard cut landing on a physical contact beat
+  through-object wipe                — camera passes an obstruction that wipes the frame
+
+COMPOSITING
+  world-space element                — locked to the scene, moves with camera parallax
+  screen-space element               — locked to the frame, ignores camera
+  contact shadow                     — grounding shadow where element meets surface
+  reflection pickup                  — element appearing in wet ground, glass, or metal
+
+
+================================================================================
+PART B — WORKED EXAMPLE (MULTI-SHOT, 28 SECONDS)
+================================================================================
+Brief that produced it: "Trail running shoe brand film. Mountain ridge, golden
+hour, one runner. Epic but restrained. About 30 seconds."
+
+
+SECTION 1: EFFECTS TIMELINE
+
+SHOT 1 / MOMENT (0.0s - 3.5s) — Cold Open, Ridge Silhouette
+• EFFECT: locked-off wide + atmospheric haze (god rays) + grain lift
+• Wide static frame. A ridge line cuts the frame diagonally from lower-left to
+  upper-right. Sun sits just above the ridge, backlighting a thin band of
+  airborne dust. The runner is a small silhouette entering from frame left,
+  occupying roughly 4% of frame height.
+• Camera is dead still. Long lens compression, ridge and sun stacked flat.
+• Real-time, 100% speed. No movement in the frame except the runner and the dust.
+• Holds. The stillness is the setup — everything after this moves.
+
+SHOT 2 / MOMENT (3.5s - 7.0s) — Low-Angle Contact
+• EFFECT: low-angle tracking + speed ramp (deceleration) + particle wash
+• Camera drops to ground level, roughly 20cm off the trail, tracking with the
+  runner's feet moving right to left. Grit and small stones kick toward lens.
+• Wide lens, close to the shoe. Foot strike fills lower third of frame.
+• Enters at 100% speed, ramps down to approximately 25% speed across 12-15
+  frames as the shoe compresses into the dirt, then holds slow through the
+  toe-off.
+• Releases back toward real time as the foot leaves frame — the release carries
+  the momentum into the next shot.
+
+SHOT 3 / MOMENT (7.0s - 7.5s) — Whip Transition
+• EFFECT: whip pan (left-to-right) + motion blur smear + chromatic fringing
+• The frame smears horizontally, ridge and sky reducing to colour bands. Warm
+  highlights streak longest, shadows shortest. Slight colour separation at the
+  left and right frame edges under the speed.
+• Camera rotates fast on its vertical axis, approximately 6-8 frames of full smear.
+• Faster than real time, roughly 200% through the smear.
+• Resolves out of the smear directly into Shot 4 already in motion.
+
+SHOT 4 / MOMENT (7.5s - 13.0s) — Ridge Run, Orbit
+• EFFECT: clockwise orbit (approx. 120°) + shallow depth + anamorphic lens flare
+• Runner on the ridge crest, camera arcing around behind them as they move.
+  Valley opens and closes behind the subject as the arc travels. Sun enters
+  frame at approximately 10.5s and throws a horizontal anamorphic streak across
+  the upper third.
+• Mid-length lens, T1.5-look — the valley is dissolved into soft warm gradient.
+• Real-time, 100% speed. Deliberate reset after the ramp in Shot 2.
+• Arc slows as it completes; the deceleration of the camera hands off to the
+  pull-back in Shot 5.
+
+SHOT 5 / MOMENT (13.0s - 18.0s) — Scale Reveal
+• EFFECT: pull-back reveal (crane, descend-to-rise) + atmospheric haze +
+  bloom bleed
+• Camera pulls back and rises approximately six body-heights. The runner stays
+  roughly the same size in frame while the mountain range unfolds behind and
+  below. Layered haze separates each ridge into its own tonal band.
+• Wide lens, camera moving continuously, no cut.
+• Real-time throughout. Movement is slow and even — no easing spikes.
+• Highlights on the furthest ridge bloom and bleed into the sky at around 17s,
+  carrying the frame toward white for the transition.
+
+SHOT 6 / MOMENT (18.0s - 18.4s) — Bloom Flash
+• EFFECT: light-flash transition (bloom to near-white) + light wrap
+• The blown highlight expands to fill roughly 80% of frame. The runner's edge
+  holds as a dark line wrapped in warm light for 3-4 frames before the frame
+  clears.
+• No camera movement of its own — the flash carries the cut.
+• Approximately 10 frames total.
+• The next shot resolves out of the white rather than cutting into it.
+
+SHOT 7 / MOMENT (18.4s - 24.0s) — Descent, Signature Beat
+• EFFECT: speed ramp (deceleration) + frozen beat + particle wash + frame
+  rotation (clockwise, approx. 15-20°)
+• THIS IS THE SIGNATURE VISUAL EFFECT. Runner leaves the ridge into a loose
+  scree descent. As the lead foot lands, spray of dust and small stone fans
+  outward in a full arc. Motion ramps from 100% down to approximately 20%
+  speed, then to a near-stop of approximately 5% for 10-12 frames at maximum
+  particle spread. Through the near-stop, the frame rotates clockwise 15-20°,
+  putting the slope on a diagonal. Particles hang, individually resolved.
+• Camera is close and low, moving with the descent, roughly 1.5m from the subject.
+• Release from the near-stop is fast — back to 100% within 8 frames.
+• The rotation unwinds as speed returns, levelling by the end of the block.
+
+SHOT 8 / MOMENT (24.0s - 28.0s) — Resolution
+• EFFECT: handheld drift + rack focus (foreground grass to runner) + grain lift
+• Runner slows to a walk on the flat, back to camera, valley ahead. Foreground
+  grass in the near field. Focus starts on the grass and racks to the runner
+  across approximately 1.2 seconds at 25.0s.
+• Handheld float, low amplitude — approximately 1-2% frame movement, no obvious
+  drift direction.
+• Real-time, 100% speed for the full block.
+• Ends on the hold. Light drops perceptibly across the last second as the sun
+  clears the ridge behind camera. Grain lifts as the exposure falls.
+
+
+SECTION 2: MASTER EFFECTS INVENTORY
+
+SPEED MANIPULATION
+1. Speed ramp (deceleration) — used 2x — Shots 2, 7 — drops the viewer into
+   physical detail at the two contact beats.
+2. Frozen beat / near-stop — used 1x — Shot 7 — holds the particle spread at
+   maximum extension; the anchor of the whole film.
+3. Real-time reset — used 3x — Shots 4, 5, 8 — protects the film from ramp
+   fatigue; every slow beat is paid for by a real-time stretch.
+
+CAMERA MOVEMENT
+4. Locked-off wide — used 1x — Shot 1 — stillness as the baseline the rest
+   departs from.
+5. Low-angle tracking — used 1x — Shot 2 — puts the product at eye level with
+   the ground.
+6. Clockwise orbit (approx. 120°) — used 1x — Shot 4 — reveals the valley
+   without cutting.
+7. Pull-back reveal (crane) — used 1x — Shot 5 — establishes scale at the
+   midpoint.
+8. Handheld drift — used 1x — Shot 8 — returns human, unstable framing for the
+   landing.
+9. Frame rotation (clockwise, 15-20°) — used 1x — Shot 7 — destabilises the
+   signature beat.
+
+TRANSITIONS
+10. Whip pan + smear — used 1x — Shot 3 — carries momentum out of the first
+    slow beat.
+11. Light-flash / bloom transition — used 1x — Shot 6 — resets the eye before
+    the signature beat.
+
+OPTICAL / ATMOSPHERIC
+12. Atmospheric haze / god rays — used 2x — Shots 1, 5 — separates depth
+    layers, warms the grade.
+13. Particle wash — used 2x — Shots 2, 7 — the physical texture of the surface.
+14. Anamorphic lens flare — used 1x — Shot 4 — single warm streak, not repeated.
+15. Bloom bleed — used 1x — Shot 5 — sets up the flash transition.
+16. Light wrap — used 1x — Shot 6 — holds the subject readable through the flash.
+17. Chromatic fringing — used 1x — Shot 3 — edge stress under the whip only.
+18. Shallow depth (T1.5-look) — used 1x — Shot 4 — isolates the runner on the ridge.
+19. Rack focus — used 1x — Shot 8 — the last movement in the film.
+20. Grain lift — used 2x — Shots 1, 8 — bookends the film with texture.
+
+
+SECTION 3: EFFECTS DENSITY MAP
+
+0.0s - 3.5s   = LOW DENSITY (locked-off, haze, grain — 3 effects in 3.5s, all static)
+3.5s - 7.0s   = MEDIUM DENSITY (low-angle track, deceleration ramp, particle wash — 3 effects in 3.5s)
+7.0s - 7.5s   = HIGH DENSITY (whip pan, motion smear, chromatic fringing, 200% speed — 4 effects in 0.5s)
+7.5s - 13.0s  = MEDIUM DENSITY (orbit, shallow depth, anamorphic flare — 3 effects in 5.5s)
+13.0s - 18.0s = LOW DENSITY (crane pull-back, haze, bloom — 3 effects in 5.0s, one continuous move)
+18.0s - 18.4s = HIGH DENSITY (bloom flash, light wrap, near-white blowout — 3 effects in 0.4s)
+18.4s - 24.0s = HIGH DENSITY (deceleration ramp, near-stop, particle wash, frame rotation, fast release — 5 effects in 5.6s)
+24.0s - 28.0s = LOW DENSITY (handheld drift, rack focus, grain lift — 3 effects in 4.0s)
+
+Note the shape: the two HIGH stretches sit at 7.0s and 18.4s, and the second is
+paid for by the LOW stretch at 13.0s-18.0s immediately before it. The film never
+runs two HIGH segments back to back.
+
+
+SECTION 4: MOTION FLOW
+
+OPENING (0.0s - 7.0s)
+Enters still. The first thing the viewer feels is scale and quiet — a locked
+frame with one small moving element. The drop to ground level at 3.5s is the
+first physical jolt, and the deceleration ramp on the foot strike is the first
+time the film asks the viewer to look closely at something specific. Energy
+climbs from zero.
+
+BUILD, FIRST MOVEMENT (7.0s - 13.0s)
+The whip breaks the observational mode. From here the camera is a participant,
+not a witness. The orbit runs at real time deliberately — after a ramp, the
+honest speed reads as confidence rather than as a gap.
+
+RESET (13.0s - 18.0s)
+The breathing moment the extended duration requires. One continuous camera move,
+no speed manipulation, no cuts. Scale replaces speed as the source of impact.
+This stretch exists so the signature beat lands.
+
+PEAK (18.0s - 24.0s)
+The flash clears the eye, then the descent delivers the signature beat: ramp
+down, near-stop at maximum particle spread, rotation destabilising the horizon,
+then a fast release. This is the highest energy in the film and it is the only
+place where four effects stack simultaneously.
+
+RESOLUTION (24.0s - 28.0s)
+Energy lands rather than stops. Handheld float returns a human hand to the
+camera, the rack focus gives the eye one last deliberate movement, and the
+falling light closes the frame. The final impression is aftermath, not arrival.
+
+
+================================================================================
+PART C — WORKED EXCERPT (SINGLE CONTINUOUS SHOT, 24 SECONDS)
+================================================================================
+Shows how to structure Section 1 when there are no cuts. Same detail level;
+transitions become internal momentum shifts.
+Brief that produced it: "One unbroken shot through a rain-wet city street at
+night, following a courier on foot. Neon. No cuts."
+
+
+SECTION 1: EFFECTS TIMELINE — SINGLE CONTINUOUS SHOT, NO CUTS
+
+MOMENT (0.0s) — Entry
+• EFFECT: through-object wipe + shallow depth + reflection pickup
+• Camera starts behind a rain-streaked window, then passes through the open
+  doorway into the street. The window edge wipes the frame left to right as the
+  camera clears it. Wet pavement carries inverted neon.
+• Handheld, chest height, moving forward at walking pace.
+• Real-time, 100% speed.
+• The wipe hands the frame to the street — no cut, the obstruction does the work.
+
+MOMENT (3.0s - 8.0s) — Pickup and Follow
+• EFFECT: push-in (dolly) + rack focus (street depth to courier) + light wrap
+• Courier enters from frame right ahead of camera. Focus rides from the far
+  street to the courier's back across roughly 0.8 seconds. Neon signage behind
+  them wraps a magenta edge around their shoulders.
+• Camera accelerates from walking to jogging pace, closing distance by about
+  half.
+• Real-time. Handheld amplitude rises with pace — approximately 3% frame movement.
+• Momentum shift, not a cut: the pace increase is the transition.
+
+MOMENT (8.0s - 12.5s) — Corner
+• EFFECT: arc (left, approx. 70°) + motion blur smear + particle wash (rain)
+• Courier turns hard left at a corner; camera arcs with them, the near building
+  edge sweeping across frame in blur. Rain crosses the lens light from the
+  upper-left.
+• Camera stays roughly 2m behind, arcing on the same radius as the subject.
+• Brief acceleration to approximately 130% through the turn, back to 100% on exit.
+• The building edge functions as an internal wipe — the frame is fully occluded
+  for 4-5 frames.
+
+MOMENT (12.5s - 18.0s) — Underpass Reset
+• EFFECT: real-time reset + grain lift + locked framing distance
+• Light drops as the courier enters an underpass. Neon falls away; a single
+  sodium fixture carries the exposure. Grain rises noticeably. Camera holds a
+  constant distance — no push, no pull.
+• Handheld amplitude drops back to approximately 1%.
+• Real-time, 100% speed, no manipulation of any kind for the full block.
+• This is the breathing stretch. It exists to make the exit beat land.
+
+MOMENT (18.0s - 24.0s) — Exit
+• EFFECT: speed ramp (deceleration) + bloom bleed + anamorphic lens flare +
+  frozen beat
+• THIS IS THE SIGNATURE VISUAL EFFECT. The courier exits the underpass into
+  full neon. Headlights of a passing car enter frame right and bloom hard.
+  Motion ramps from 100% to approximately 20% speed as the courier crosses the
+  light, holding a near-stop of approximately 5% for 12 frames with rain
+  suspended mid-fall around them, each drop individually lit.
+• Camera continues forward through the ramp — the move never stops, only the
+  world slows.
+• Release back to 100% across 10 frames, then the courier pulls ahead and the
+  camera lets the distance open.
+• Ends with the camera slowing to a stop as the courier leaves frame.
+
+
+================================================================================
+PART D — WORKED EXAMPLE (COMPOSITE MODE)
+================================================================================
+Brief that produced it: "Here's my existing 12s clip of a car on a coast road.
+Keep everything the same, just add a drone flying alongside it." Video file
+supplied plus one product render.
+
+
+📎 IMAGE/VIDEO REFERENCE MAP
+• Video 1 (coast_road_v3.mp4) → base footage, retained exactly as-is
+• Image 1 (drone_render_white.png) → element being composited in (product)
+
+
+COMPOSITE BRIEF
+
+The base footage is a 12-second aerial-adjacent tracking shot of a dark car
+travelling right to left on a coastal road, late afternoon, sun low and behind
+camera-left. Every frame of the existing footage is retained exactly as shot —
+no regrade, no reframe, no change to the car, road, sea, or camera path.
+
+Composite in the white quadcopter drone from the reference render as a
+world-space element, flying alongside and slightly ahead of the car, offset
+approximately 4 metres to the seaward side and 2.5 metres above road level. It
+holds that offset relative to the car for the full duration, so it inherits the
+base footage's camera parallax exactly — as the camera moves, the drone shifts
+against the background at the same rate as the car, not at the rate of the
+frame.
+
+The drone is present from frame one. No entry animation.
+
+Light integration: key from camera-left and slightly behind, matching the
+existing sun position. The upper-left surfaces of the drone's body and arms
+carry a warm specular hit; the underside sits in cool bounce picked up from the
+sea below, noticeably bluer than the topside. A faint warm rim runs along the
+seaward edge. The white body picks up a subtle gold cast overall to sit in the
+same grade as the road surface.
+
+Shadow: no ground contact shadow — the drone is airborne over open water for
+most of the shot. Where the road passes beneath it at approximately 7s, a soft,
+heavily diffused shadow crosses the tarmac, offset to camera-right of the drone
+and roughly 3x its footprint, at low opacity.
+
+Motion behaviour: rotors spin fast enough to read as motion-blurred discs, not
+discrete blades. The airframe carries low-amplitude float — a 2-3° pitch and
+roll drift on a slow irregular cycle, never mechanical or looping. At
+approximately 8s it banks approximately 8° into the road's left curve, holding
+the bank for roughly 1.5 seconds before levelling as the road straightens.
+
+The drone stays fully in frame for the whole clip and never crosses in front of
+the car.
+
+
+================================================================================
+PART E — DETAIL LEVEL CHECKLIST
+================================================================================
+
+Before delivering, verify:
+
+□ Every effect name carries a modifier (direction, degrees, percentage, or type)
+□ Every slow-motion beat has an explicit speed percentage
+□ Every camera move states its type AND its extent
+□ Every stacked moment lists all simultaneous effects on the EFFECT line
+□ At least one moment is explicitly called out as the SIGNATURE VISUAL EFFECT
+  (two to three, spaced apart, on 22-30s pieces)
+□ No two HIGH DENSITY segments sit back to back
+□ At least one LOW DENSITY reset exists in any piece over 22 seconds
+□ Transitions are written as their own moments, with their own effects and
+  frame counts
+□ The description says what the frame does, not what software would do it
+□ Section 4 covers opening, build, and resolution as distinct phases
+□ Total duration does not exceed 30 seconds
