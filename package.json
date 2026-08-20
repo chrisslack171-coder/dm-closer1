@@ -7,8 +7,16 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "scrape:reels": "node scripts/scrape-reels.mjs"
+    "scrape:reels": "node scripts/scrape-reels.mjs",
+    "analyze:reels": "node scripts/analyze-reels.mjs"
   },
-  "dependencies": { "react": "^18.3.1", "react-dom": "^18.3.1" },
-  "devDependencies": { "@vitejs/plugin-react": "^4.3.1", "vite": "^5.4.0" }
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.120.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.0"
+  }
 }

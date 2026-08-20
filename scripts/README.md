@@ -67,3 +67,48 @@ reachable.
 
 `APIFY_API_BASE` overrides the API host — used to test the script against a
 local stub without spending credits.
+
+---
+
+## analyze-reels.mjs — turn the scrape into a marketing brief
+
+Reads what `scrape-reels.mjs` wrote and has Claude find the patterns across the
+winners — hook shapes, content angles, CTA placement, format — then turn them
+into reels you can film.
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...      # or run `ant auth login`
+npm run scrape:reels                      # → reels_data.json
+npm run analyze:reels                     # → reels_analysis.json + reels_analysis.md
+```
+
+```bash
+node scripts/analyze-reels.mjs \
+  --audience "solo founders" \
+  --offer 'a $47 AI workflow playbook' \
+  --effort xhigh                          # low | medium | high | xhigh | max
+node scripts/analyze-reels.mjs --dry-run  # print the prompt, call no API
+node scripts/analyze-reels.mjs --help
+```
+
+`--audience` and `--offer` are optional but do most of the work in sharpening
+the content ideas — without them the brief describes the niche rather than your
+position in it.
+
+### How the call is built
+
+- **`claude-opus-5`** with **adaptive thinking** — the model paces its own
+  reasoning depth across the captions; `--effort` sets the ceiling.
+- **Structured outputs** (`output_config.format`, a closed JSON schema) so the
+  brief is a guaranteed shape rather than prose to be regex'd apart.
+- **Server-side fallback** (`fallbacks: "default"`) — if a safety classifier
+  declines the request, the API re-runs it on the recommended substitute rather
+  than handing back a refusal. Routed by refusal category, so there's no model
+  to pin or maintain. Drop the `betas` and `fallbacks` lines to opt out.
+- **Engagement rates are computed in the script**, not by the model. Arithmetic
+  is the one thing the script does better, and it frees the model to reason
+  about *why* a reel with rank-3 views has rank-30 engagement.
+- A `countTokens` pre-flight prints the input cost before the real call.
+
+Two files come out: `reels_analysis.json` (structured, for piping onward) and
+`reels_analysis.md` (readable, for you).
