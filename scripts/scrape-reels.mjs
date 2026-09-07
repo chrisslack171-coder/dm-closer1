@@ -8,6 +8,7 @@
 // Usage:
 //   APIFY_TOKEN=apify_api_xxx node scripts/scrape-reels.mjs
 //   ... --hashtag aitools --days 30 --top 50 --out reels_data.json
+//   ... --all                    # every source in tracked-sources.json
 //
 // The token comes from APIFY_TOKEN (console.apify.com → Settings → API tokens)
 // or --token. Nothing is written until the scrape succeeds.
@@ -18,7 +19,7 @@
 // general apify/instagram-scraper. All three are supported; pick with --actor.
 // =============================================================================
 
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 
 const API = process.env.APIFY_API_BASE || "https://api.apify.com/v2";
 
@@ -44,6 +45,9 @@ scrape-reels.mjs — top Instagram reels for a hashtag, by views
 
   --hashtag <tag>     hashtag to scrape, no "#"      (default: aitools)
   --username <user>   scrape an account's reels instead of a hashtag
+  --all               scrape every source in tracked-sources.json,
+                      writing one file per source
+  --sources <file>    tracked source list  (default: tracked-sources.json)
   --days <n>          only keep posts newer than n days   (default: 30)
   --top <n>           how many reels to keep             (default: 50)
   --limit <n>         how many posts to ask Apify for     (default: top x 6)
@@ -64,10 +68,18 @@ const USERNAME = args.username ? String(args.username).replace(/^@/, "") : null;
 const DAYS = Number(args.days ?? 30);
 const TOP = Number(args.top ?? 50);
 const OUT = String(args.out || "reels_data.json");
+const SOURCES_FILE = String(args.sources || "tracked-sources.json");
 const TIMEOUT_MS = Number(args.timeout ?? 900) * 1000;
-const ACTOR = String(
-  args.actor || (USERNAME ? "apify~instagram-reel-scraper" : "apify~instagram-hashtag-scraper")
-).replace("/", "~");
+const ACTOR_OVERRIDE = args.actor ? String(args.actor).replace("/", "~") : null;
+
+// Hashtag search and per-account reel listing are different actors — Apify's
+// reel scraper has no hashtag input — so the source type picks the actor.
+function actorFor(source) {
+  if (ACTOR_OVERRIDE) return ACTOR_OVERRIDE;
+  return source.type === "username"
+    ? "apify~instagram-reel-scraper"
+    : "apify~instagram-hashtag-scraper";
+}
 // Ask for well more than we keep: most hashtag results fall outside the window
 // or aren't reels, so a 1:1 request would leave us short after filtering.
 const LIMIT = Number(args.limit ?? TOP * 6);
@@ -81,32 +93,39 @@ function die(msg) {
 }
 
 // ------------------------------------------------------------ actor input ---
-function buildInput() {
-  switch (ACTOR) {
+function buildInput(source, actor) {
+  const isUser = source.type === "username";
+  switch (actor) {
     case "apify~instagram-reel-scraper":
-      if (!USERNAME) {
+      if (!isUser) {
         die(
-          "apify~instagram-reel-scraper only takes usernames. Pass --username <account>, " +
-            "or drop --actor to use apify~instagram-hashtag-scraper for #" + HASHTAG + "."
+          "apify~instagram-reel-scraper only takes usernames, but source \"" + source.value +
+            "\" is a hashtag. Drop --actor to use apify~instagram-hashtag-scraper for it."
         );
       }
-      return { username: [USERNAME], resultsLimit: LIMIT };
+      return { username: [source.value], resultsLimit: LIMIT };
 
     case "apify~instagram-hashtag-scraper":
-      return { hashtags: [HASHTAG], resultsLimit: LIMIT };
+      if (isUser) {
+        die(
+          "apify~instagram-hashtag-scraper only takes hashtags, but source \"" + source.value +
+            "\" is an account. Drop --actor to use apify~instagram-reel-scraper for it."
+        );
+      }
+      return { hashtags: [source.value], resultsLimit: LIMIT };
 
     case "apify~instagram-scraper":
-      return USERNAME
-        ? { directUrls: ["https://www.instagram.com/" + USERNAME + "/"],
+      return isUser
+        ? { directUrls: ["https://www.instagram.com/" + source.value + "/"],
             resultsType: "posts", resultsLimit: LIMIT, addParentData: false }
-        : { search: HASHTAG, searchType: "hashtag",
+        : { search: source.value, searchType: "hashtag",
             resultsType: "posts", resultsLimit: LIMIT, addParentData: false };
 
     default:
       // Unknown actor: best-effort input. Check the actor's own input schema.
-      return USERNAME
-        ? { username: [USERNAME], resultsLimit: LIMIT }
-        : { hashtags: [HASHTAG], resultsLimit: LIMIT };
+      return isUser
+        ? { username: [source.value], resultsLimit: LIMIT }
+        : { hashtags: [source.value], resultsLimit: LIMIT };
   }
 }
 
@@ -123,9 +142,9 @@ async function apifyFetch(path, init = {}) {
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 
-async function runActor(input) {
-  console.log("Starting " + ACTOR + " ...");
-  const started = await apifyFetch("/acts/" + ACTOR + "/runs", {
+async function runActor(actor, input) {
+  console.log("Starting " + actor + " ...");
+  const started = await apifyFetch("/acts/" + actor + "/runs", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
@@ -148,6 +167,7 @@ async function runActor(input) {
     status = poll.data.status;
   }
   if (status !== "SUCCEEDED") throw new Error("Actor run " + status + " — see the run URL above.");
+
 
   return fetchDataset(datasetId);
 }
@@ -221,21 +241,33 @@ function isReel(item) {
 }
 
 // -------------------------------------------------------------------- main --
-async function main() {
-  const input = buildInput();
+// Prefixed rather than "@"-prefixed: keeps output filenames glob-safe without
+// quoting, and keeps a tag and an account of the same name in separate files.
+const slug = (source) =>
+  (source.type === "username" ? "user_" : "tag_") +
+  source.value.replace(/[^A-Za-z0-9_.-]/g, "");
+
+// One source in, one JSON file out. Everything that varies between a hashtag
+// run and an account run is already resolved by the time we get here.
+async function runOne(source, outPath) {
+  const actor = actorFor(source);
+  const input = buildInput(source, actor);
+  const label = source.type === "username" ? "@" + source.value : "#" + source.value;
 
   if (args["dry-run"]) {
-    console.log("Actor: " + ACTOR);
-    console.log("Input: " + JSON.stringify(input, null, 2));
-    console.log("Would keep the top " + TOP + " reels from the last " + DAYS + " days → " + OUT);
-    return;
-  }
-  if (!TOKEN) {
-    die("no Apify token. Set APIFY_TOKEN or pass --token (console.apify.com → Settings → API tokens).");
+    console.log(label + " → " + actor);
+    console.log("  input: " + JSON.stringify(input));
+    console.log("  would keep the top " + TOP + " reels from the last " + DAYS +
+      " days → " + outPath);
+    return null;
   }
 
-  const raw = await runActor(input);
-  if (!raw.length) die("the actor returned no items — is the hashtag/account public and spelled right?");
+  console.log("\n=== " + label + " ===");
+  const raw = await runActor(actor, input);
+  if (!raw.length) {
+    console.log("  no items returned — is " + label + " public and spelled right? Skipping.");
+    return null;
+  }
 
   const cutoff = Date.now() - DAYS * 24 * 60 * 60 * 1000;
   const reelFlags = raw.map(isReel);
@@ -253,15 +285,18 @@ async function main() {
     .map(({ _postedAtMs, ...rest }, i) => ({ rank: i + 1, ...rest }));
 
   const payload = {
-    query: USERNAME ? { username: USERNAME } : { hashtag: "#" + HASHTAG },
-    actor: ACTOR,
+    query: source.type === "username"
+      ? { username: source.value }
+      : { hashtag: "#" + source.value },
+    note: source.note || null,
+    actor,
     scrapedAt: new Date().toISOString(),
     windowDays: DAYS,
     sortedBy: "views",
     counts: {
       scraped: raw.length,
       reels: reels.length,
-      undated: undated,
+      undated,
       inWindow: inWindow.length,
       withViewCount: withViews.length,
       returned: top.length,
@@ -269,11 +304,11 @@ async function main() {
     reels: top,
   };
 
-  await writeFile(OUT, JSON.stringify(payload, null, 2) + "\n", "utf8");
+  await writeFile(outPath, JSON.stringify(payload, null, 2) + "\n", "utf8");
 
   console.log(
-    "\n" + raw.length + " scraped → " + reels.length + " reels → " + inWindow.length +
-    " in the last " + DAYS + " days → wrote top " + top.length + " to " + OUT
+    raw.length + " scraped → " + reels.length + " reels → " + inWindow.length +
+    " in the last " + DAYS + " days → wrote top " + top.length + " to " + outPath
   );
   if (undated) console.log("  (" + undated + " reels had no timestamp and were dropped)");
   if (inWindow.length && withViews.length < inWindow.length) {
@@ -282,10 +317,63 @@ async function main() {
   if (top.length < TOP) {
     console.log("  Fewer than " + TOP + " matched — retry with a bigger --limit or a wider --days.");
   }
-  for (const r of top.slice(0, 10)) {
+  for (const r of top.slice(0, 5)) {
     console.log("  " + String(r.rank).padStart(2) + ". " + String(r.views).padStart(9) +
       " views  @" + (r.username || "?") + "  " + (r.url || ""));
   }
+  return { label, outPath, returned: top.length };
+}
+
+async function loadSources() {
+  let file;
+  try {
+    file = JSON.parse(await readFile(SOURCES_FILE, "utf8"));
+  } catch (err) {
+    if (err.code === "ENOENT") die("no " + SOURCES_FILE + " — create one, or drop --all.");
+    die("couldn't read " + SOURCES_FILE + ": " + err.message);
+  }
+  const list = (file.sources || []).filter((s) => s.enabled !== false);
+  if (!list.length) die(SOURCES_FILE + " has no enabled sources.");
+  for (const s of list) {
+    if (s.type !== "hashtag" && s.type !== "username") {
+      die('source "' + s.value + '" has type "' + s.type + '" — must be "hashtag" or "username".');
+    }
+    if (!s.value) die("a source in " + SOURCES_FILE + " is missing its `value`.");
+  }
+  return list;
+}
+
+async function main() {
+  if (!TOKEN && !args["dry-run"]) {
+    die("no Apify token. Set APIFY_TOKEN or pass --token (console.apify.com → Settings → API tokens).");
+  }
+
+  if (args.all) {
+    const sources = await loadSources();
+    console.log("Tracking " + sources.length + " sources from " + SOURCES_FILE);
+    const done = [];
+    for (const source of sources) {
+      // Sequential on purpose: parallel runs multiply Apify spend and make a
+      // mid-run failure much harder to attribute to a source.
+      try {
+        const result = await runOne(source, "reels_data." + slug(source) + ".json");
+        if (result) done.push(result);
+      } catch (err) {
+        console.error("  " + slug(source) + " failed: " + err.message);
+      }
+    }
+    if (!args["dry-run"]) {
+      console.log("\nDone — " + done.length + "/" + sources.length + " sources written:");
+      for (const d of done) console.log("  " + d.label + " → " + d.outPath + " (" + d.returned + " reels)");
+      if (done.length < sources.length) process.exitCode = 1;
+    }
+    return;
+  }
+
+  const source = USERNAME
+    ? { type: "username", value: USERNAME }
+    : { type: "hashtag", value: HASHTAG };
+  await runOne(source, OUT);
 }
 
 main().catch((err) => die(err.message));

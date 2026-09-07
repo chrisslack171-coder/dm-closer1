@@ -1,0 +1,17 @@
+{
+  "$comment": "Sources scrape-reels.mjs watches with --all. type is \"hashtag\" or \"username\"; set enabled:false to pause one without deleting it.",
+  "sources": [
+    {
+      "type": "hashtag",
+      "value": "aitools",
+      "note": "Original target — broad AI-tools niche",
+      "enabled": true
+    },
+    {
+      "type": "username",
+      "value": "randyandelena",
+      "note": "Tracked account",
+      "enabled": true
+    }
+  ]
+}

@@ -20,6 +20,30 @@ node scripts/scrape-reels.mjs --username someaccount        # an account's reels
 node scripts/scrape-reels.mjs --help
 ```
 
+### Tracking several sources
+
+`tracked-sources.json` is the watch list. `--all` runs every enabled entry and
+writes one file per source (`reels_data.tag_aitools.json`,
+`reels_data.user_randyandelena.json`), so runs don't overwrite each other:
+
+```bash
+npm run scrape:reels -- --all
+node scripts/scrape-reels.mjs --all --dry-run    # show the plan, spend nothing
+node scripts/analyze-reels.mjs --in reels_data.user_randyandelena.json
+```
+
+```jsonc
+{ "sources": [
+    { "type": "hashtag",  "value": "aitools",       "note": "…", "enabled": true },
+    { "type": "username", "value": "randyandelena", "note": "…", "enabled": true }
+] }
+```
+
+`type` picks the actor automatically. Set `enabled: false` to pause a source
+without deleting it. Sources run one at a time — parallel runs multiply Apify
+spend and make a mid-run failure hard to attribute; one failing source logs and
+the rest continue, with a non-zero exit if any failed.
+
 ### Which actor
 
 Apify's **Instagram Reel Scraper** (`apify/instagram-reel-scraper`) takes
